@@ -36,6 +36,12 @@ class Character extends MovableObject {
     "../img/2_character_pepe/4_hurt/H-43.png"
   ];
 
+  offset = {
+    top: 100, // Viel transparenter Raum über dem Kopf
+    bottom: 20, // Nur 20px unter den Füßen (siehe Screenshot!)
+    left: 25, // 25px von links
+    right: 25 // 25px von rechts
+  };
   world;
   speed = 2;
   y = 80;

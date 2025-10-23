@@ -11,16 +11,25 @@ class World {
   throwableObjects = [];
   collectedBottles = 0; // Gesammelte Flaschen ✅
 
-  hurtSound = new Audio(
-    "https://cdn.freesound.org/previews/262/262279_4902403-lq.mp3"
-  );
   lastHitTime = 0;
 
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext("2d");
     this.canvas = canvas;
     this.keyboard = keyboard;
-    this.hurtSound.volume = 0.3; // Lautstärke bei Berührung mit Chicken
+    this.hurtSound = new Audio(
+      "https://cdn.freesound.org/previews/262/262279_4902403-lq.mp3"
+    ); // Sound bei Berührung mit Chicken ✅
+    this.hurtSound.volume = 0.5;
+    this.coinSound = new Audio(
+      "https://cdn.freesound.org/previews/779/779239_15068221-lq.mp3"
+    ); // Sound beim Einsammeln von Münzen ✅
+    this.coinSound.volume = 0.5;
+    this.bottleSound = new Audio(
+      "https://cdn.freesound.org/previews/326/326039_8238-lq.mp3"
+    ); // Sound beim Einsammeln von Flaschen
+    this.bottleSound.volume = 0.4;
+
     this.draw();
     this.setWorld();
     this.run();
@@ -107,6 +116,10 @@ class World {
         let totalBottles = 4; // Gesamtanzahl der Bottles im Level
         let percentage = (this.collectedBottles / totalBottles) * 100;
         this.bottleBar.setPercentage(percentage);
+
+        //Sound abspielen
+        this.bottleSound.currentTime = 0; // Zurückspulen auf Anfang
+        this.bottleSound.play();
       }
     });
   }
@@ -118,10 +131,14 @@ class World {
         this.level.coins.splice(index, 1);
 
         // Coin Bar aktualisieren
-        let totalCoins = 14; // <-- Hier die Gesamtzahl der Münzen definieren (14 Coins im Level = 100%)
+        let totalCoins = 14; // <-- Hier die Gesamtzahl der Münzen definieren (In Lv1.js konfigurierbar)
         let coinsCollected = totalCoins - this.level.coins.length;
         let percentage = (coinsCollected / totalCoins) * 100;
         this.coinBar.setPercentage(percentage);
+
+        // Sound abspielen ✅
+        this.coinSound.currentTime = 0;
+        this.coinSound.play();
       }
     });
   }

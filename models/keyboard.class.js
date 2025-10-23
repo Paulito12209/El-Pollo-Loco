@@ -5,6 +5,7 @@ class Keyboard extends MovableObject {
   DOWN = false;
   SPACE = false;
   D = false;
+  F = false;
 
   constructor() {
     super();

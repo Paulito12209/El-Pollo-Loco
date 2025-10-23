@@ -24,11 +24,20 @@ class MovableObject extends DrawableObject {
   }
 
   isColliding(mo) {
+    // Die 4 Bedingungen der Collision-Methode, angepasst mit Offsets
     return (
-      this.x + this.width > mo.x &&
-      this.y + this.height > mo.y &&
-      this.x < mo.x &&
-      this.y < mo.y + mo.height
+      // Bedingung 1: Rechts → Links (x + width - offset.right > mo.x + mo.offset.left)
+      this.x + this.width - (this.offset?.right || 0) >
+        mo.x + (mo.offset?.left || 0) &&
+      // Bedingung 2: Unten → Oben (y + height - offset.bottom > mo.y + mo.offset.top)
+      this.y + this.height - (this.offset?.bottom || 0) >
+        mo.y + (mo.offset?.top || 0) &&
+      // Bedingung 3: Links → Rechts (x + offset.left < mo.x + mo.width - mo.offset.right)
+      this.x + (this.offset?.left || 0) <
+        mo.x + mo.width - (mo.offset?.right || 0) &&
+      // Bedingung 4: Oben → Unten (y + offset.top < mo.y + mo.height - mo.offset.bottom)
+      this.y + (this.offset?.top || 0) <
+        mo.y + mo.height - (mo.offset?.bottom || 0)
     );
   }
 

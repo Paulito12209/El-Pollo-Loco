@@ -61,26 +61,26 @@ const level1 = new Level(
     )
   ],
   [
-    new Coin(300, 180),
-    new Coin(350, 150),
+    new Coin(300, 200),
+    new Coin(400, 200),
 
-    new Coin(400, 150),
-    new Coin(450, 200),
+    new Coin(500, 130),
+    new Coin(600, 130),
 
-    new Coin(500, 180),
-    new Coin(550, 200),
+    new Coin(700, 130),
+    new Coin(800, 130),
 
-    new Coin(600, 220),
-    new Coin(650, 200),
+    new Coin(900, 130),
+    new Coin(1000, 130),
 
-    new Coin(700, 150),
-    new Coin(750, 200),
+    new Coin(1100, 130),
+    new Coin(1200, 130),
 
-    new Coin(800, 180),
-    new Coin(850, 160),
+    new Coin(1300, 130),
+    new Coin(1400, 130),
 
-    new Coin(900, 200),
-    new Coin(950, 180)
+    new Coin(1500, 130),
+    new Coin(1600, 130)
   ],
   [
     new Bottle(350, 360),
