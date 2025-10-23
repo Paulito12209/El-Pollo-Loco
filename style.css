@@ -1,0 +1,30 @@
+* {
+  margin: 0;
+  font-family: "zabras";
+}
+
+@font-face {
+  font-family: "zabras";
+  src: url("./fonts/Zabars.ttf");
+  font-weight: 700;
+}
+
+h1 {
+  font-size: 48px;
+  text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-image: url("../img/5_background/desktop-bg/El Pollo Loco Desktop Hintergrund.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100vh;
+}
+
+canvas {
+  background-color: black;
+}
