@@ -49,13 +49,25 @@ class World {
   }
 
   checkThrowableObjects() {
-    if (this.keyboard.D) {
+    //                     ↓ Nur, wenn mindestens 1 Flasche gesammelt wurde
+    if (this.keyboard.D && this.collectedBottles > 0) {
       let bottle = new ThrowableObject(
         this.character.x + 60,
         this.character.y + 80
       );
       this.throwableObjects.push(bottle);
+
+      // Anzahl der Flasche muss reduziert werden, wenn eine geworfen wurde
+      this.collectedBottles--;
+
+      this.updateBottleBar();
     }
+  }
+
+  updateBottleBar() {
+    let totalBottles = 4; // Gesamtanzahl der Bottles im Level
+    let percentage = (this.collectedBottles / totalBottles) * 100;
+    this.bottleBar.setPercentage(percentage);
   }
 
   checkCollisions() {
@@ -113,9 +125,7 @@ class World {
         this.collectedBottles++;
 
         // Bottle Bar aktualisieren
-        let totalBottles = 4; // Gesamtanzahl der Bottles im Level
-        let percentage = (this.collectedBottles / totalBottles) * 100;
-        this.bottleBar.setPercentage(percentage);
+        this.updateBottleBar();
 
         //Sound abspielen
         this.bottleSound.currentTime = 0; // Zurückspulen auf Anfang
