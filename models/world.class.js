@@ -28,7 +28,11 @@ class World {
     this.bottleSound = new Audio(
       "https://cdn.freesound.org/previews/326/326039_8238-lq.mp3"
     ); // Sound beim Einsammeln von Flaschen
-    this.bottleSound.volume = 0.4;
+    this.bottleSound.volume = 0.5;
+    this.chickenDeathSound = new Audio(
+      "https://cdn.freesound.org/previews/667/667601_2971579-lq.mp3"
+    ); // Sound von sterbende Chickens
+    this.chickenDeathSound.volume = 0.5;
 
     this.draw();
     this.setWorld();
@@ -41,7 +45,7 @@ class World {
 
   run() {
     setInterval(() => {
-      this.checkCollisions();
+      // this.checkCollisions(); <- Ist jetzt in draw()
       this.checkThrowableObjects();
       this.checkCoinCollisions(); // ✅
       this.checkBottleCollisions(); // ✅
@@ -73,14 +77,26 @@ class World {
   checkCollisions() {
     this.level.enemies.forEach((enemy) => {
       if (this.character.isColliding(enemy)) {
-        this.character.hit();
-        this.healthBar.setPercentage(this.character.energy);
+        // Prüfen: Von oben?
+        if (this.character.isJumpingOnEnemy(enemy)) {
+          // Von oben → Chicken stirbt
+          if (!enemy.isDead) {
+            enemy.isDead = true;
+            this.chickenDeathSound.currentTime = 1; // Zurückspulen ✅
+            this.chickenDeathSound.play(); // Sound abspielen ✅
+          }
 
-        // Sound nur abspielen, wenn seit letztem Hit halbe Sekunde vergangen
-        let currentTime = new Date().getTime();
-        if (currentTime - this.lastHitTime > 500) {
-          this.hurtSound.play(); // Sound wenn Berührung mit Chicken
-          this.lastHitTime = currentTime;
+          this.character.jump();
+        } else if (!enemy.isDead) {
+          // Nur Schaden von der Seite, wenn Chicken noch lebt ✅
+          this.character.hit();
+          this.healthBar.setPercentage(this.character.energy);
+
+          let currentTime = new Date().getTime();
+          if (currentTime - this.lastHitTime > 500) {
+            this.hurtSound.play();
+            this.lastHitTime = currentTime;
+          }
         }
       }
     });
@@ -108,6 +124,9 @@ class World {
 
     this.ctx.translate(this.camera_x, 0);
     this.ctx.translate(-this.camera_x, 0);
+
+    // Kollisionen HIER prüfen (60x pro Sekunde!) ✅
+    this.checkCollisions();
 
     let self = this;
     requestAnimationFrame(function () {
@@ -147,7 +166,7 @@ class World {
         this.coinBar.setPercentage(percentage);
 
         // Sound abspielen ✅
-        this.coinSound.currentTime = 0;
+        this.coinSound.currentTime = 0.6;
         this.coinSound.play();
       }
     });

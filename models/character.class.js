@@ -39,8 +39,8 @@ class Character extends MovableObject {
   offset = {
     top: 100, // Viel transparenter Raum über dem Kopf
     bottom: 20, // Nur 20px unter den Füßen (siehe Screenshot!)
-    left: 25, // 25px von links
-    right: 25 // 25px von rechts
+    left: 20, // 25px von links
+    right: 20 // 25px von rechts
   };
   world;
   speed = 2;
@@ -85,5 +85,9 @@ class Character extends MovableObject {
         }
       }
     }, 120);
+  }
+
+  isJumpingOnEnemy(enemy) {
+    return this.isAboveGround() && this.speedY < 0 && this.isColliding(enemy);
   }
 }
