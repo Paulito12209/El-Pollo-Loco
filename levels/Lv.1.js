@@ -1,24 +1,24 @@
 const level1 = new Level(
   [
     new Chicken(500),
-    new Chicken(650),
-    new Chicken(800),
-    new Chicken(950),
-    new Chicken(1100),
-    new Chicken(1250),
-    new Chicken(1400),
-    new Chicken(1550),
-    new Chicken(1700),
-    new Chicken(1850),
-    new Chicken(2000),
-    new Chicken(2150),
-    new Chicken(2300),
-    new Chicken(2450),
-    new Chicken(2600),
-    new Chicken(2750),
-    new Chicken(2900),
-    new Chicken(3150),
-    new Chicken(3300),
+    // new Chicken(650),
+    // new Chicken(800),
+    // new Chicken(950),
+    // new Chicken(1100),
+    // new Chicken(1250),
+    // new Chicken(1400),
+    // new Chicken(1550),
+    // new Chicken(1700),
+    // new Chicken(1850),
+    // new Chicken(2000),
+    // new Chicken(2150),
+    // new Chicken(2300),
+    // new Chicken(2450),
+    // new Chicken(2600),
+    // new Chicken(2750),
+    // new Chicken(2900),
+    // new Chicken(3150),
+    // new Chicken(3300),
     new Endboss(2000)
   ],
   [
@@ -85,6 +85,20 @@ const level1 = new Level(
     new BackgroundObject(
       "../img/5_background/layers/1_first_layer/2.png",
       720 * 3
+    ),
+    // x = 720 * 4
+    new BackgroundObject("../img/5_background/layers/air.png", 720 * 4),
+    new BackgroundObject(
+      "../img/5_background/layers/3_third_layer/1.png",
+      720 * 4
+    ),
+    new BackgroundObject(
+      "../img/5_background/layers/2_second_layer/1.png",
+      720 * 4
+    ),
+    new BackgroundObject(
+      "../img/5_background/layers/1_first_layer/1.png",
+      720 * 4
     )
   ],
   [

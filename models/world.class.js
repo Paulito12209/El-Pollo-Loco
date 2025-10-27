@@ -59,13 +59,40 @@ class World {
     this.throwableObjects.forEach((bottle) => {
       this.level.enemies.forEach((enemy) => {
         if (bottle.isColliding(enemy) && !enemy.isDead) {
-          enemy.isDead = true;
-          this.chickenDeathSound.currentTime = 1; // Zurückspulen ✅
-          this.chickenDeathSound.play(); // Sound abspielen ✅) {
+          // Unterscheidung zwischen ENDBOSS vs. CHICKEN ✅
+          if (enemy instanceof Endboss) {
+            // ENDBOSS verliert Leben
+            enemy.energy -= 20;
+            enemy.lastHit = new Date().getTime();
+            if (enemy.energy <= 0) {
+              enemy.energy = 0;
+              enemy.isDead = true;
+            }
+            this.endbossBar.setPercentage(enemy.energy);
+            this.chickenDeathSound.currentTime = 1;
+            this.chickenDeathSound.play();
+          } else {
+            // Normale Chickens sterben sofort nach einem Flaschentreffer
+            enemy.isDead = true;
+            this.chickenDeathSound.currentTime = 1;
+            this.chickenDeathSound.play();
+          }
         }
       });
     });
   }
+
+  // checkBottleEnemyCollisions() {
+  //   this.throwableObjects.forEach((bottle) => {
+  //     this.level.enemies.forEach((enemy) => {
+  //       if (bottle.isColliding(enemy) && !enemy.isDead) {
+  //         enemy.isDead = true;
+  //         this.chickenDeathSound.currentTime = 1; // Zurückspulen ✅
+  //         this.chickenDeathSound.play(); // Sound abspielen ✅) {
+  //       }
+  //     });
+  //   });
+  // }
 
   checkThrowableObjects() {
     //                     ↓ Nur, wenn mindestens 1 Flasche gesammelt wurde
@@ -94,19 +121,38 @@ class World {
       if (this.character.isColliding(enemy)) {
         // Prüfen: Von oben?
         if (this.character.isJumpingOnEnemy(enemy)) {
-          // Von oben → Chicken stirbt
-          if (!enemy.isDead) {
-            enemy.isDead = true;
-            this.chickenDeathSound.currentTime = 1; // Zurückspulen ✅
-            this.chickenDeathSound.play(); // Sound abspielen ✅
+          // Ist es ein Endboss? (NEUE LOGIK)
+          if (enemy instanceof Endboss) {
+            // ENDGEGNER-LOGIK
+            if (!enemy.isDead) {
+              // enemy.hit();
+              enemy.energy -= 20; // Leben reduzieren (anpassbar)
+              enemy.lastHit = new Date().getTime();
+              // Ist er jetzt tot?
+              if (enemy.energy <= 0) {
+                enemy.energy = 0;
+                enemy.isDead = true;
+              }
+              // Endboss-Bar aktualisieren
+              this.endbossBar.setPercentage(enemy.energy);
+              // Sound muss auch abgespielt werden
+              this.chickenDeathSound.currentTime = 1;
+              this.chickenDeathSound.play();
+            }
+          } else {
+            // Nur Schaden von der Seite, wenn Chicken noch lebt
+            if (!enemy.isDead) {
+              enemy.isDead = true;
+              this.chickenDeathSound.currentTime = 1;
+              this.chickenDeathSound.play();
+            }
           }
-
+          // Character springt nach oben (bei allen Gegnern)
           this.character.jump();
         } else if (!enemy.isDead && !this.character.isHurt()) {
-          // Nur Schaden von der Seite, wenn Chicken noch lebt ✅
+          // Schaden von der Seite (bleibt gleich)
           this.character.hit();
           this.healthBar.setPercentage(this.character.energy);
-
           let currentTime = new Date().getTime();
           if (currentTime - this.lastHitTime > 500) {
             this.hurtSound.play();
@@ -116,6 +162,34 @@ class World {
       }
     });
   }
+
+  // checkCollisions() {
+  //   this.level.enemies.forEach((enemy) => {
+  //     if (this.character.isColliding(enemy)) {
+  //       // Prüfen: Von oben?
+  //       if (this.character.isJumpingOnEnemy(enemy)) {
+  //         // Von oben → Chicken stirbt
+  //         if (!enemy.isDead) {
+  //           enemy.isDead = true;
+  //           this.chickenDeathSound.currentTime = 1; // Zurückspulen ✅
+  //           this.chickenDeathSound.play(); // Sound abspielen ✅
+  //         }
+
+  //         this.character.jump();
+  //       } else if (!enemy.isDead && !this.character.isHurt()) {
+  //         // Nur Schaden von der Seite, wenn Chicken noch lebt ✅
+  //         this.character.hit();
+  //         this.healthBar.setPercentage(this.character.energy);
+
+  //         let currentTime = new Date().getTime();
+  //         if (currentTime - this.lastHitTime > 500) {
+  //           this.hurtSound.play();
+  //           this.lastHitTime = currentTime;
+  //         }
+  //       }
+  //     }
+  //   });
+  // }
 
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);

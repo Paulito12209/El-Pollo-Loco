@@ -26,8 +26,6 @@ class HealthBar extends DrawableObject {
     this.img = this.imageCache[path];
   }
 
-  // if(this.percentage == 100){}
-
   resolveImageIndex() {
     if (this.percentage == 100) {
       return 5;
@@ -43,6 +41,4 @@ class HealthBar extends DrawableObject {
       return 0;
     }
   }
-
-  // this.loadImages(this.IMAGES);
 }
