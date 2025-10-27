@@ -8,6 +8,7 @@ class World {
   healthBar = new HealthBar();
   coinBar = new CoinBar(); // Münzen ✅
   bottleBar = new BottleBar(); // Flaschen ✅
+  endbossBar = new EndbossBar(); // Leben des Endboss ✅
   throwableObjects = [];
   collectedBottles = 0; // Gesammelte Flaschen ✅
 
@@ -49,7 +50,21 @@ class World {
       this.checkThrowableObjects();
       this.checkCoinCollisions(); // ✅
       this.checkBottleCollisions(); // ✅
+      this.checkBottleEnemyCollisions(); //✅
+      this.checkEndbossAppearance(); //
     }, 200);
+  }
+
+  checkBottleEnemyCollisions() {
+    this.throwableObjects.forEach((bottle) => {
+      this.level.enemies.forEach((enemy) => {
+        if (bottle.isColliding(enemy) && !enemy.isDead) {
+          enemy.isDead = true;
+          this.chickenDeathSound.currentTime = 1; // Zurückspulen ✅
+          this.chickenDeathSound.play(); // Sound abspielen ✅) {
+        }
+      });
+    });
   }
 
   checkThrowableObjects() {
@@ -69,7 +84,7 @@ class World {
   }
 
   updateBottleBar() {
-    let totalBottles = 4; // Gesamtanzahl der Bottles im Level
+    let totalBottles = 7; // Gesamtanzahl der Bottles im Level
     let percentage = (this.collectedBottles / totalBottles) * 100;
     this.bottleBar.setPercentage(percentage);
   }
@@ -87,7 +102,7 @@ class World {
           }
 
           this.character.jump();
-        } else if (!enemy.isDead) {
+        } else if (!enemy.isDead && !this.character.isHurt()) {
           // Nur Schaden von der Seite, wenn Chicken noch lebt ✅
           this.character.hit();
           this.healthBar.setPercentage(this.character.energy);
@@ -122,6 +137,10 @@ class World {
     this.addToMap(this.coinBar); // Coin Bar ✅
     this.addToMap(this.bottleBar); // Bottle Bar ✅
 
+    if (this.endbossBar.isVisible) {
+      this.addToMap(this.endbossBar);
+    }
+    // Falls Character über x = 1600 ist, wird die Enboss-Bar eingeblendet
     this.ctx.translate(this.camera_x, 0);
     this.ctx.translate(-this.camera_x, 0);
 
@@ -202,6 +221,12 @@ class World {
     this.ctx.restore();
   }
 
+  checkEndbossAppearance() {
+    // Wenn Character bei x = 1600 oder weiter ist:
+    if (this.character.x >= 1600) {
+      this.endbossBar.isVisible = true; // Bar wird angezeigt ✅
+    }
+  }
   // === NACHTRAG aus PL2 - Lektion 10.2 ===
   // verwirrte mich!
 }

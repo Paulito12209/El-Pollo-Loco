@@ -4,10 +4,15 @@ class Cloud extends MovableObject {
   width = 400;
   speed = 0.15;
 
-  constructor() {
-    super().loadImage("../img/5_background/layers/4_clouds/1.png");
+  /**
+   * Erstellt eine Wolke mit konfigurierbarer Position
+   * @param {string} imagePath - Pfad zum Wolkenbild
+   * @param {number} x - horizontale Position
+   */
+  constructor(imagePath, x) {
+    super().loadImage(imagePath);
 
-    // this.x = Math.random() * 500;
+    this.x = x;
     this.animate();
   }
 

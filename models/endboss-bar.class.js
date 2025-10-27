@@ -1,23 +1,24 @@
-class BottleBar extends DrawableObject {
+class EndbossBar extends DrawableObject {
   IMAGES = [
-    "../img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/0.png",
-    "../img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/20.png",
-    "../img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/40.png",
-    "../img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/60.png",
-    "../img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/80.png",
-    "../img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/100.png"
+    "../img/7_statusbars/2_statusbar_endboss/blue/blue0.png",
+    "../img/7_statusbars/2_statusbar_endboss/blue/blue20.png",
+    "../img/7_statusbars/2_statusbar_endboss/blue/blue40.png",
+    "../img/7_statusbars/2_statusbar_endboss/blue/blue60.png",
+    "../img/7_statusbars/2_statusbar_endboss/blue/blue80.png",
+    "../img/7_statusbars/2_statusbar_endboss/blue/blue100.png"
   ];
 
-  percentage = 0;
+  percentage = 100;
+  isVisible = false; // Am Anfang ausblenden ✅
 
   constructor() {
     super();
     this.loadImages(this.IMAGES);
-    this.x = 20;
-    this.y = 100; // Unter der Coin Bar
+    this.x = 500; // Position oben rechts
+    this.y = 10;
     this.width = 200;
     this.height = 60;
-    this.setPercentage(0);
+    this.setPercentage(100); // Boss startet mit vollem Leben
   }
 
   setPercentage(percentage) {

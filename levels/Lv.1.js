@@ -1,10 +1,35 @@
 const level1 = new Level(
-  [new Chicken(), new Chicken(), new Chicken(), new Endboss()],
+  [
+    new Chicken(500),
+    new Chicken(650),
+    new Chicken(800),
+    new Chicken(950),
+    new Chicken(1100),
+    new Chicken(1250),
+    new Chicken(1400),
+    new Chicken(1550),
+    new Chicken(1700),
+    new Chicken(1850),
+    new Chicken(2000),
+    new Chicken(2150),
+    new Chicken(2300),
+    new Chicken(2450),
+    new Chicken(2600),
+    new Chicken(2750),
+    new Chicken(2900),
+    new Chicken(3150),
+    new Chicken(3300),
+    new Endboss(2000)
+  ],
   [
     new Cloud("../img/5_background/layers/4_clouds/1.png", 0),
-    new Cloud("../img/5_background/layers/4_clouds/2.png", 720),
-    new Cloud("../img/5_background/layers/4_clouds/1.png", 1440),
-    new Cloud("../img/5_background/layers/4_clouds/2.png", 2160)
+    new Cloud("../img/5_background/layers/4_clouds/2.png", 520),
+    new Cloud("../img/5_background/layers/4_clouds/2.png", 920),
+    new Cloud("../img/5_background/layers/4_clouds/1.png", 1320),
+    new Cloud("../img/5_background/layers/4_clouds/1.png", 1820),
+    new Cloud("../img/5_background/layers/4_clouds/2.png", 2220),
+    new Cloud("../img/5_background/layers/4_clouds/1.png", 2620),
+    new Cloud("../img/5_background/layers/4_clouds/1.png", 3020)
   ],
   [
     // x = -720
@@ -88,6 +113,9 @@ const level1 = new Level(
     new Bottle(350, 360),
     new Bottle(550, 360),
     new Bottle(800, 360),
-    new Bottle(1100, 360)
+    new Bottle(1100, 360),
+    new Bottle(1350, 360),
+    new Bottle(1550, 360),
+    new Bottle(1800, 360)
   ]
 );

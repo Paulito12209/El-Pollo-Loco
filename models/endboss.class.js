@@ -1,7 +1,13 @@
 class Endboss extends MovableObject {
   y = 235;
   width = 150;
-  //   height = 60;
+
+  offset = {
+    top: 40, // Viel transparenter Raum über dem Kopf
+    bottom: 20, // Nur 20px unter den Füßen (siehe Screenshot!)
+    left: 10, // 25px von links
+    right: 20 // 25px von rechts
+  };
 
   IMAGES_WALKING = [
     "../img/4_enemie_boss_chicken/2_alert/G5.png",
@@ -13,12 +19,13 @@ class Endboss extends MovableObject {
     "../img/4_enemie_boss_chicken/2_alert/G11.png",
     "../img/4_enemie_boss_chicken/2_alert/G12.png"
   ];
+
   // currentImage = 0;
 
-  constructor() {
+  constructor(x) {
     super().loadImage(this.IMAGES_WALKING[0]);
     this.loadImages(this.IMAGES_WALKING);
-    this.x = 2000;
+    this.x = x;
     this.animate();
   }
 
