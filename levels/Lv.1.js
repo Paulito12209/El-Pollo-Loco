@@ -19,7 +19,7 @@ const level1 = new Level(
     // new Chicken(2900),
     // new Chicken(3150),
     // new Chicken(3300),
-    new Endboss(2000)
+    new Endboss(1000) // Achtung: Lebensanzeige evtl. anpassen!
   ],
   [
     new Cloud("../img/5_background/layers/4_clouds/1.png", 0),
@@ -125,11 +125,11 @@ const level1 = new Level(
   ],
   [
     new Bottle(350, 360),
+    new Bottle(450, 360),
     new Bottle(550, 360),
-    new Bottle(800, 360),
-    new Bottle(1100, 360),
-    new Bottle(1350, 360),
-    new Bottle(1550, 360),
-    new Bottle(1800, 360)
+    new Bottle(650, 360),
+    new Bottle(750, 360),
+    new Bottle(850, 360),
+    new Bottle(950, 360)
   ]
 );

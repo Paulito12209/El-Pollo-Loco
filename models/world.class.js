@@ -58,7 +58,11 @@ class World {
   checkBottleEnemyCollisions() {
     this.throwableObjects.forEach((bottle) => {
       this.level.enemies.forEach((enemy) => {
-        if (bottle.isColliding(enemy) && !enemy.isDead) {
+        // ✅ Prüfen: Kollision + Flasche hat noch nicht getroffen + Gegner ist nicht tot
+        if (bottle.isColliding(enemy) && !bottle.hasHit && !enemy.isDead) {
+          // ✅ Flag setzen: Diese Flasche hat jetzt getroffen!
+          bottle.hasHit = true;
+
           // Unterscheidung zwischen ENDBOSS vs. CHICKEN ✅
           if (enemy instanceof Endboss) {
             // ENDBOSS verliert Leben
@@ -81,6 +85,33 @@ class World {
       });
     });
   }
+
+  // checkBottleEnemyCollisions() {
+  //   this.throwableObjects.forEach((bottle) => {
+  //     this.level.enemies.forEach((enemy) => {
+  //       if (bottle.isColliding(enemy) && !enemy.isDead) {
+  //         // Unterscheidung zwischen ENDBOSS vs. CHICKEN ✅
+  //         if (enemy instanceof Endboss) {
+  //           // ENDBOSS verliert Leben
+  //           enemy.energy -= 20;
+  //           enemy.lastHit = new Date().getTime();
+  //           if (enemy.energy <= 0) {
+  //             enemy.energy = 0;
+  //             enemy.isDead = true;
+  //           }
+  //           this.endbossBar.setPercentage(enemy.energy);
+  //           this.chickenDeathSound.currentTime = 1;
+  //           this.chickenDeathSound.play();
+  //         } else {
+  //           // Normale Chickens sterben sofort nach einem Flaschentreffer
+  //           enemy.isDead = true;
+  //           this.chickenDeathSound.currentTime = 1;
+  //           this.chickenDeathSound.play();
+  //         }
+  //       }
+  //     });
+  //   });
+  // }
 
   // checkBottleEnemyCollisions() {
   //   this.throwableObjects.forEach((bottle) => {
@@ -297,7 +328,7 @@ class World {
 
   checkEndbossAppearance() {
     // Wenn Character bei x = 1600 oder weiter ist:
-    if (this.character.x >= 1600) {
+    if (this.character.x >= 600) { // Achtung: Anpassen, wenn Endboss wieder nach hinten versetzt wird
       this.endbossBar.isVisible = true; // Bar wird angezeigt ✅
     }
   }
