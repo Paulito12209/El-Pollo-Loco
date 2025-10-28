@@ -43,7 +43,7 @@ class Character extends MovableObject {
     right: 20 // 25px von rechts
   };
   world;
-  speed = 2;
+  speed = 4;
   y = 80;
 
   constructor() {
