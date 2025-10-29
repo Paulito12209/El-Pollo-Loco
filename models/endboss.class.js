@@ -15,6 +15,7 @@ class Endboss extends MovableObject {
   // ✅29-10-2025
   isAttacking = false;
   isWalking = false;
+  endGame = false;
   // attackAnimationFinished = false;
 
   offset = {
@@ -209,7 +210,7 @@ class Endboss extends MovableObject {
     this.isAttacking = true;
     this.speed = 0;
 
-    // Attack Animation für 8 Frames (8 * 100ms = 800ms) - schneller!
+    // Attack Animation für 8 Frames (8 * 100ms = 800ms) = also etwas schneller!
     setTimeout(() => {
       this.isAttacking = false;
     }, this.IMAGES_ATTACK.length * 100);
@@ -221,6 +222,7 @@ class Endboss extends MovableObject {
       this.isDead = true;
       setTimeout(() => {
         this.hasPlayedDeathAnimation = true;
+        this.endGame = true;
       }, this.IMAGES_DEATH.length * 220);
     }
   }

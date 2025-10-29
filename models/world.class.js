@@ -11,8 +11,15 @@ class World {
   endbossBar = new EndbossBar(); // Leben des Endboss ✅
   throwableObjects = [];
   collectedBottles = 0; // Gesammelte Flaschen ✅
-
   lastHitTime = 0;
+
+  // ✅ Endscreens
+  gameOverWin = new Endscreen(
+    "../img/9_intro_outro_screens/game_over/game over.png"
+  );
+  gameOverLost = new Endscreen(
+    "../img/9_intro_outro_screens/game_over/you lost.png"
+  );
 
   constructor(canvas, keyboard) {
     // ✅
@@ -143,7 +150,7 @@ class World {
   }
 
   checkCollisions() {
-    // ✅
+    // ✅ 29-10-2025 23:38
     this.level.enemies.forEach((enemy) => {
       if (this.character.isColliding(enemy)) {
         // Prüfen: Von oben?
@@ -154,7 +161,7 @@ class World {
             if (!enemy.isDead) {
               enemy.hit();
 
-              // ✅ FIX: Prüfe, ob Endboss nach hit() tot ist
+              // ✅ Ist Endboss nach hit() tot?
               if (enemy.energy <= 0) {
                 enemy.energy = 0;
                 enemy.isDead = true;
@@ -174,7 +181,11 @@ class World {
           }
           // Character springt nach oben (bei allen Gegnern)
           this.character.jump();
-        } else if (!enemy.isDead && !this.character.isHurt()) {
+        } else if (
+          !enemy.isDead &&
+          !this.character.isHurt() &&
+          !this.character.isDead()
+        ) {
           // Schaden von der Seite (bleibt gleich)
           this.character.hit();
           this.healthBar.setPercentage(this.character.energy);
@@ -189,7 +200,7 @@ class World {
   }
 
   draw() {
-    // ✅
+    // ✅ 29-10-2025
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.ctx.translate(this.camera_x, 0);
 
@@ -197,8 +208,8 @@ class World {
     this.addObjectsToMap(this.level.backgroundObjects);
     this.addObjectsToMap(this.level.clouds);
     this.addObjectsToMap(this.level.enemies);
-    this.addObjectsToMap(this.level.coins); // Münzen ✅
-    this.addObjectsToMap(this.level.bottles); // Flaschen ✅
+    this.addObjectsToMap(this.level.coins);
+    this.addObjectsToMap(this.level.bottles);
     this.addToMap(this.character);
     this.addObjectsToMap(this.throwableObjects);
 
@@ -206,17 +217,23 @@ class World {
 
     // Ohne Kamera (bleiben fix auf dem Bildschirm)
     this.addToMap(this.healthBar);
-    this.addToMap(this.coinBar); // Coin Bar ✅
-    this.addToMap(this.bottleBar); // Bottle Bar ✅
+    this.addToMap(this.coinBar);
+    this.addToMap(this.bottleBar);
 
     if (this.endbossBar.isVisible) {
       this.addToMap(this.endbossBar);
     }
-    // Falls Character über x = 1600 ist, wird die Enboss-Bar eingeblendet
-    this.ctx.translate(this.camera_x, 0);
-    this.ctx.translate(-this.camera_x, 0);
 
-    // Kollisionen HIER prüfen (60x pro Sekunde!) ✅
+    // ⭐ Endscreens zeichnen (NUR EINMAL!)
+    let endboss = this.level.enemies.find((e) => e instanceof Endboss);
+
+    if (this.character.endGame) {
+      this.addToMap(this.gameOverLost); // Lost Screen
+    } else if (endboss && endboss.endGame) {
+      this.addToMap(this.gameOverWin); // Win Screen
+    }
+
+    // Kollisionen HIER prüfen (60x pro Sekunde!)
     this.checkCollisions();
 
     let self = this;
@@ -224,6 +241,54 @@ class World {
       self.draw();
     });
   }
+
+  // draw() {
+  //   // ✅
+  //   this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  //   this.ctx.translate(this.camera_x, 0);
+
+  //   // Mit Kamera (bewegen sich mit der Welt)
+  //   this.addObjectsToMap(this.level.backgroundObjects);
+  //   this.addObjectsToMap(this.level.clouds);
+  //   this.addObjectsToMap(this.level.enemies);
+  //   this.addObjectsToMap(this.level.coins); // Münzen ✅
+  //   this.addObjectsToMap(this.level.bottles); // Flaschen ✅
+  //   this.addToMap(this.character);
+  //   this.addObjectsToMap(this.throwableObjects);
+
+  //   this.ctx.translate(-this.camera_x, 0);
+
+  //   // Ohne Kamera (bleiben fix auf dem Bildschirm)
+  //   this.addToMap(this.healthBar);
+  //   this.addToMap(this.coinBar); // Coin Bar ✅
+  //   this.addToMap(this.bottleBar); // Bottle Bar ✅
+
+  //   if (this.endbossBar.isVisible) {
+  //     this.addToMap(this.endbossBar);
+  //   }
+
+  //   // 🔥 Endscreens zeichnen
+  //   if (this.character.endGame) {
+  //     this.addToMap(this.gameOverLost); // Lost Screen
+  //   } else if (
+  //     this.endboss &&
+  //     this.level.enemies.find((e) => e instanceof Endboss)?.endGame
+  //   ) {
+  //     this.addToMap(this.gameOverWin); // Win Screen
+  //   }
+
+  //   // Falls Character über x = 1600 ist, wird die Enboss-Bar eingeblendet
+  //   this.ctx.translate(this.camera_x, 0);
+  //   this.ctx.translate(-this.camera_x, 0);
+
+  //   // Kollisionen HIER prüfen (60x pro Sekunde!) ✅
+  //   this.checkCollisions();
+
+  //   let self = this;
+  //   requestAnimationFrame(function () {
+  //     self.draw();
+  //   });
+  // }
 
   checkBottleCollisions() {
     // ✅

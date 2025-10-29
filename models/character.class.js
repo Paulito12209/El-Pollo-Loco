@@ -77,6 +77,7 @@ class Character extends MovableObject {
   world;
   speed = 4;
   y = 80;
+  endGame = false;
 
   constructor() {
     // ✅ 29-10-2025 - 22:18
@@ -141,6 +142,13 @@ class Character extends MovableObject {
       // ✅ 29-10-2025 21:49
       if (this.isDead()) {
         this.playAnimation(this.IMAGES_DEAD);
+
+        // Nach 1 Sekunde → endGame Flag setzen
+        if (!this.endGame) {
+          setTimeout(() => {
+            this.endGame = true;
+          }, 1000);
+        }
       } else if (this.isHurt()) {
         this.playAnimation(this.IMAGES_HURT);
       } else if (this.isAboveGround()) {
@@ -192,18 +200,15 @@ class Character extends MovableObject {
   }
 
   isJumpingOnEnemy(enemy) {
-    // NEU 29-10-2025 ✅
+    // ✅ 29-10-2025
     return this.isAboveGround() && this.speedY < 0 && this.isColliding(enemy);
   }
 
-  hit() {
-    // NEU 29-10-2025 ✅
-    this.energy -= 20; // Character nimmt 20 Schaden (5 Treffer = tot)
-
+  hit() { // ✅ 29-10-2025 - 23:38
+    this.energy -= 20;
     if (this.energy < 0) {
       this.energy = 0;
-    } else {
-      this.lastHit = new Date().getTime();
     }
+    this.lastHit = new Date().getTime(); 
   }
 }
