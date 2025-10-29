@@ -19,7 +19,7 @@ const level1 = new Level(
     // new Chicken(2900),
     // new Chicken(3150),
     // new Chicken(3300),
-    new Endboss(1000) // Achtung: Lebensanzeige evtl. anpassen!
+    new Endboss(1500) // Achtung: Lebensanzeige evtl. anpassen!
   ],
   [
     new Cloud("../img/5_background/layers/4_clouds/1.png", 0),

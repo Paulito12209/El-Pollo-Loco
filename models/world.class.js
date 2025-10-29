@@ -15,6 +15,7 @@ class World {
   lastHitTime = 0;
 
   constructor(canvas, keyboard) {
+    // ✅
     this.ctx = canvas.getContext("2d");
     this.canvas = canvas;
     this.keyboard = keyboard;
@@ -41,10 +42,23 @@ class World {
   }
 
   setWorld() {
+    // ✅
     this.character.world = this;
   }
 
+  // run() {
+  //   setInterval(() => {
+  //     // this.checkCollisions(); <- Ist jetzt in draw()
+  //     this.checkThrowableObjects();
+  //     this.checkCoinCollisions(); // ✅
+  //     this.checkBottleCollisions(); // ✅
+  //     this.checkBottleEnemyCollisions(); //✅
+  //     this.checkEndbossAppearance(); //
+  //   }, 200);
+  // }
+
   run() {
+    // ✅
     setInterval(() => {
       // this.checkCollisions(); <- Ist jetzt in draw()
       this.checkThrowableObjects();
@@ -52,10 +66,22 @@ class World {
       this.checkBottleCollisions(); // ✅
       this.checkBottleEnemyCollisions(); //✅
       this.checkEndbossAppearance(); //
+      this.updateEndbossDirection(); // ← NEU!
     }, 200);
   }
 
-  checkBottleEnemyCollisions() {  // ✅ 28-10-2025 21:14
+  // ✅
+  updateEndbossDirection() {
+    this.level.enemies.forEach((enemy) => {
+      if (enemy instanceof Endboss && !enemy.isDead) {
+        enemy.lookAtCharacter(this.character);
+      }
+    });
+  }
+
+  checkBottleEnemyCollisions() {
+    // ✅ 28-10-2025 21:14
+
     this.throwableObjects.forEach((bottle) => {
       this.level.enemies.forEach((enemy) => {
         // ✅ Prüfen: Kollision + Flasche hat noch nicht getroffen + Gegner ist nicht tot
@@ -86,68 +112,38 @@ class World {
     });
   }
 
-  // checkBottleEnemyCollisions() {
-  //   this.throwableObjects.forEach((bottle) => {
-  //     this.level.enemies.forEach((enemy) => {
-  //       if (bottle.isColliding(enemy) && !enemy.isDead) {
-  //         // Unterscheidung zwischen ENDBOSS vs. CHICKEN ✅
-  //         if (enemy instanceof Endboss) {
-  //           // ENDBOSS verliert Leben
-  //           enemy.energy -= 20;
-  //           enemy.lastHit = new Date().getTime();
-  //           if (enemy.energy <= 0) {
-  //             enemy.energy = 0;
-  //             enemy.isDead = true;
-  //           }
-  //           this.endbossBar.setPercentage(enemy.energy);
-  //           this.chickenDeathSound.currentTime = 1;
-  //           this.chickenDeathSound.play();
-  //         } else {
-  //           // Normale Chickens sterben sofort nach einem Flaschentreffer
-  //           enemy.isDead = true;
-  //           this.chickenDeathSound.currentTime = 1;
-  //           this.chickenDeathSound.play();
-  //         }
-  //       }
-  //     });
-  //   });
-  // }
-
-  // checkBottleEnemyCollisions() {
-  //   this.throwableObjects.forEach((bottle) => {
-  //     this.level.enemies.forEach((enemy) => {
-  //       if (bottle.isColliding(enemy) && !enemy.isDead) {
-  //         enemy.isDead = true;
-  //         this.chickenDeathSound.currentTime = 1; // Zurückspulen ✅
-  //         this.chickenDeathSound.play(); // Sound abspielen ✅) {
-  //       }
-  //     });
-  //   });
-  // }
-
   checkThrowableObjects() {
-    //                     ↓ Nur, wenn mindestens 1 Flasche gesammelt wurde
+    // ✅ 28-10-2025 21:14
+
     if (this.keyboard.D && this.collectedBottles > 0) {
+      let direction = this.character.otherDirection ? -1 : 1;
+
+      // Spawn-Position anpassen:
+      let spawnX = this.character.otherDirection
+        ? this.character.x - 20 // Nach links: Vor Pepe
+        : this.character.x + 60; // Nach rechts: Hinter Pepe
+
       let bottle = new ThrowableObject(
-        this.character.x + 60,
-        this.character.y + 80
+        spawnX,
+        this.character.y + 80,
+        direction
       );
       this.throwableObjects.push(bottle);
 
-      // Anzahl der Flasche muss reduziert werden, wenn eine geworfen wurde
       this.collectedBottles--;
-
       this.updateBottleBar();
     }
   }
 
   updateBottleBar() {
+    // ✅
     let totalBottles = 7; // Gesamtanzahl der Bottles im Level
     let percentage = (this.collectedBottles / totalBottles) * 100;
     this.bottleBar.setPercentage(percentage);
   }
 
   checkCollisions() {
+    // ✅
     this.level.enemies.forEach((enemy) => {
       if (this.character.isColliding(enemy)) {
         // Prüfen: Von oben?
@@ -156,7 +152,14 @@ class World {
           if (enemy instanceof Endboss) {
             // ENDGEGNER-LOGIK
             if (!enemy.isDead) {
-              enemy.hit(); // ✅ Aktiviert!
+              enemy.hit();
+
+              // ✅ FIX: Prüfe, ob Endboss nach hit() tot ist
+              if (enemy.energy <= 0) {
+                enemy.energy = 0;
+                enemy.isDead = true;
+              }
+
               this.endbossBar.setPercentage(enemy.energy);
               this.chickenDeathSound.currentTime = 1;
               this.chickenDeathSound.play();
@@ -185,82 +188,8 @@ class World {
     });
   }
 
-  // checkCollisions() {
-  //   this.level.enemies.forEach((enemy) => {
-  //     if (this.character.isColliding(enemy)) {
-  //       // Prüfen: Von oben?
-  //       if (this.character.isJumpingOnEnemy(enemy)) {
-  //         // Ist es ein Endboss? (NEUE LOGIK)
-  //         if (enemy instanceof Endboss) {
-  //           // ENDGEGNER-LOGIK
-  //           if (!enemy.isDead) {
-  //             // enemy.hit();
-  //             enemy.energy -= 20; // Leben reduzieren (anpassbar)
-  //             enemy.lastHit = new Date().getTime();
-  //             // Ist er jetzt tot?
-  //             if (enemy.energy <= 0) {
-  //               enemy.energy = 0;
-  //               enemy.isDead = true;
-  //             }
-  //             // Endboss-Bar aktualisieren
-  //             this.endbossBar.setPercentage(enemy.energy);
-  //             // Sound muss auch abgespielt werden
-  //             this.chickenDeathSound.currentTime = 1;
-  //             this.chickenDeathSound.play();
-  //           }
-  //         } else {
-  //           // Nur Schaden von der Seite, wenn Chicken noch lebt
-  //           if (!enemy.isDead) {
-  //             enemy.isDead = true;
-  //             this.chickenDeathSound.currentTime = 1;
-  //             this.chickenDeathSound.play();
-  //           }
-  //         }
-  //         // Character springt nach oben (bei allen Gegnern)
-  //         this.character.jump();
-  //       } else if (!enemy.isDead && !this.character.isHurt()) {
-  //         // Schaden von der Seite (bleibt gleich)
-  //         this.character.hit();
-  //         this.healthBar.setPercentage(this.character.energy);
-  //         let currentTime = new Date().getTime();
-  //         if (currentTime - this.lastHitTime > 500) {
-  //           this.hurtSound.play();
-  //           this.lastHitTime = currentTime;
-  //         }
-  //       }
-  //     }
-  //   });
-  // }
-
-  // checkCollisions() {
-  //   this.level.enemies.forEach((enemy) => {
-  //     if (this.character.isColliding(enemy)) {
-  //       // Prüfen: Von oben?
-  //       if (this.character.isJumpingOnEnemy(enemy)) {
-  //         // Von oben → Chicken stirbt
-  //         if (!enemy.isDead) {
-  //           enemy.isDead = true;
-  //           this.chickenDeathSound.currentTime = 1; // Zurückspulen ✅
-  //           this.chickenDeathSound.play(); // Sound abspielen ✅
-  //         }
-
-  //         this.character.jump();
-  //       } else if (!enemy.isDead && !this.character.isHurt()) {
-  //         // Nur Schaden von der Seite, wenn Chicken noch lebt ✅
-  //         this.character.hit();
-  //         this.healthBar.setPercentage(this.character.energy);
-
-  //         let currentTime = new Date().getTime();
-  //         if (currentTime - this.lastHitTime > 500) {
-  //           this.hurtSound.play();
-  //           this.lastHitTime = currentTime;
-  //         }
-  //       }
-  //     }
-  //   });
-  // }
-
   draw() {
+    // ✅
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.ctx.translate(this.camera_x, 0);
 
@@ -297,6 +226,7 @@ class World {
   }
 
   checkBottleCollisions() {
+    // ✅
     this.level.bottles.forEach((bottle, index) => {
       if (this.character.isColliding(bottle)) {
         // Bottle aus dem Level entfernen
@@ -316,6 +246,7 @@ class World {
   }
 
   checkCoinCollisions() {
+    // ✅
     this.level.coins.forEach((coin, index) => {
       if (this.character.isColliding(coin)) {
         // Münze aus dem Level entfernen
@@ -335,12 +266,14 @@ class World {
   }
 
   addObjectsToMap(objects) {
+    // ✅
     objects.forEach((o) => {
       this.addToMap(o);
     });
   }
 
   addToMap(mo) {
+    // ✅
     if (mo.otherDirection) {
       this.flipImage(mo);
     }
@@ -353,6 +286,7 @@ class World {
   }
 
   flipImage(mo) {
+    // ✅
     this.ctx.save();
     this.ctx.translate(mo.width, 0);
     this.ctx.scale(-1, 1);
@@ -360,17 +294,17 @@ class World {
   }
 
   flipImageBack(mo) {
+    // ✅
     mo.x = mo.x * -1;
     this.ctx.restore();
   }
 
   checkEndbossAppearance() {
+    // ✅
     // Wenn Character bei x = 1600 oder weiter ist:
     if (this.character.x >= 600) {
       // Achtung: Anpassen, wenn Endboss wieder nach hinten versetzt wird
       this.endbossBar.isVisible = true; // Bar wird angezeigt ✅
     }
   }
-  // === NACHTRAG aus PL2 - Lektion 10.2 ===
-  // verwirrte mich!
 }

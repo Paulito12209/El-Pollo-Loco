@@ -12,6 +12,11 @@ class Endboss extends MovableObject {
   firstCounterAttack = false;
   secondCounterAttack = false;
 
+  // ✅29-10-2025
+  isAttacking = false;
+  isWalking = false;
+  // attackAnimationFinished = false;
+
   offset = {
     top: 40, // Viel transparenter Raum über dem Kopf
     bottom: 20, // Nur 20px unter den Füßen (siehe Screenshot!)
@@ -72,36 +77,38 @@ class Endboss extends MovableObject {
   }
 
   animate() {
-    // ✅ 28-10-2025 - 22:06
-    // Bewegungs-Loop (60 FPS)
+    // ✅ 29-10-2025
+    // Bewegungs-Loop (bleibt gleich)
     setInterval(() => {
-      // Nur nach unten bewegen, WENN Death Animation fertig ist!
       if (this.isDead && this.hasPlayedDeathAnimation) {
         this.moveDown();
       }
     }, 1000 / 60);
 
-    // Animations-Loop
+    // ✅ Animations-Loop
     setInterval(() => {
       this.checkDeath();
       this.checkAlert();
       this.checkCounterAttacks();
 
       if (this.isDead && !this.hasPlayedDeathAnimation) {
-        // 👈 NEU: Während Death Animation läuft
         this.playAnimation(this.IMAGES_DEATH);
       } else if (!this.isDead) {
-        // Normale Animationen nur, wenn Boss NICHT tot ist
-        if (this.isHurt()) {
+        // ✅ Attack Animation hat Priorität
+        if (this.isAttacking) {
+          this.playAnimation(this.IMAGES_ATTACK);
+        } else if (this.isWalking) {
+          // ✅ Walking Animation
+          this.playAnimation(this.IMAGES_WALKING);
+        } else if (this.isHurt()) {
           this.playAnimation(this.IMAGES_HURT);
         } else {
           this.playAnimation(this.IMAGES_ALERT);
         }
       }
-    }, 220);
+    }, 150);
   }
 
-  // === ALERT ANIMATION (bei 60% Leben) ===
   checkAlert() {
     // ✅ 28-10-2025 22:08
     if (this.energy <= 60 && !this.hasPlayedAlert) {
@@ -144,85 +151,91 @@ class Endboss extends MovableObject {
   // === 1. COUNTER-ATTACK (Normal) ===
 
   playFirstCounterAttack() {
-    // ✅ 28-10-2025 22:08
-    let imageIndex = 0;
+    this.isWalking = true;
     this.speed = 15;
 
+    let walkFrames = 0;
     let walkInterval = setInterval(() => {
-      this.loadImage(this.IMAGES_WALKING[imageIndex]);
-      this.moveLeft();
-      imageIndex++;
+      // ✅ Bewege in Richtung des Characters
+      if (this.otherDirection) {
+        this.moveRight(); // Character ist rechts
+      } else {
+        this.moveLeft(); // Character ist links
+      }
 
-      if (imageIndex >= this.IMAGES_WALKING.length) {
+      walkFrames++;
+      if (walkFrames >= this.IMAGES_WALKING.length) {
         clearInterval(walkInterval);
+        this.isWalking = false;
         this.startFirstAttackAnimation();
       }
     }, 100);
   }
 
   startFirstAttackAnimation() {
-    // ✅ 28-10-2025 22:08
-    let imageIndex = 0;
+    this.isAttacking = true;
+    this.speed = 0;
 
-    let attackInterval = setInterval(() => {
-      this.loadImage(this.IMAGES_ATTACK[imageIndex]);
-      imageIndex++;
-
-      if (imageIndex >= this.IMAGES_ATTACK.length) {
-        clearInterval(attackInterval);
-        this.speed = 0;
-      }
-    }, 150);
+    // Attack Animation für 8 Frames (8 * 150ms = 1200ms)
+    setTimeout(() => {
+      this.isAttacking = false;
+      // this.attackAnimationFinished = true;
+    }, this.IMAGES_ATTACK.length * 150);
   }
 
-  // === 2. COUNTER-ATTACK (Schneller!) ===
-
   playSecondCounterAttack() {
-    // ✅ 28-10-2025 22:08
-    let imageIndex = 0;
-    this.speed = 20; // Schneller!
+    this.isWalking = true;
+    this.speed = 20;
 
+    let walkFrames = 0;
     let walkInterval = setInterval(() => {
-      this.loadImage(this.IMAGES_WALKING[imageIndex]);
-      this.moveLeft();
-      imageIndex++;
+      // ✅ Bewege in Richtung des Characters
+      if (this.otherDirection) {
+        this.moveRight(); // Character ist rechts
+      } else {
+        this.moveLeft(); // Character ist links
+      }
 
-      if (imageIndex >= this.IMAGES_WALKING.length) {
+      walkFrames++;
+      if (walkFrames >= this.IMAGES_WALKING.length) {
         clearInterval(walkInterval);
+        this.isWalking = false;
         this.startSecondAttackAnimation();
       }
-    }, 50); // Doppelt so schnell!
+    }, 50);
   }
 
   startSecondAttackAnimation() {
-    // ✅ 28-10-2025 22:08
-    let imageIndex = 0;
+    this.isAttacking = true;
+    this.speed = 0;
 
-    let attackInterval = setInterval(() => {
-      this.loadImage(this.IMAGES_ATTACK[imageIndex]);
-      imageIndex++;
-
-      if (imageIndex >= this.IMAGES_ATTACK.length) {
-        clearInterval(attackInterval);
-        this.speed = 0;
-      }
-    }, 100); // Schneller!
+    // Attack Animation für 8 Frames (8 * 100ms = 800ms) - schneller!
+    setTimeout(() => {
+      this.isAttacking = false;
+    }, this.IMAGES_ATTACK.length * 100);
   }
 
-  // === DEATH ANIMATION ===
   checkDeath() {
-    // ✅ 28-10-2025 22:08
-    if (this.energy <= 0 && !this.isDead) {
+    //✅ 29-10-2025
+    if (this.energy <= 0 && !this.hasPlayedDeathAnimation) {
       this.isDead = true;
-
-      // Setze Flag nach der Death Animation
       setTimeout(() => {
         this.hasPlayedDeathAnimation = true;
-      }, this.IMAGES_DEATH.length * 220); // 3 Bilder * 220ms = 660ms
+      }, this.IMAGES_DEATH.length * 220);
     }
   }
 
   moveDown() {
+    // ✅ 29-10-2025
     this.y += 2; // Geschwindigkeit nach unten
+  }
+
+  // ✅ Endboss schaut Character an (28-10-2025 -> 1)
+  lookAtCharacter(character) {
+    if (character.x < this.x) {
+      this.otherDirection = false; // Nach links schauen
+    } else {
+      this.otherDirection = true; // Nach rechts schauen
+    }
   }
 }
