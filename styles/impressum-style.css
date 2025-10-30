@@ -1,0 +1,160 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "zabras", sans-serif;
+}
+
+body {
+  background-image: url("../img/5_background/desktop-bg/El Pollo Loco Desktop Hintergrund.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.impressum-container {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.impressum-content {
+  background-color: rgba(255, 214, 2, 0.95);
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3);
+  border: 3px solid white;
+}
+
+.impressum-content h1 {
+  font-size: 48px;
+  text-align: center;
+  margin-bottom: 32px;
+  color: #000;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.impressum-content h2 {
+  font-size: 32px;
+  margin-top: 24px;
+  margin-bottom: 16px;
+  color: #c35b17;
+}
+
+.impressum-content h3 {
+  font-size: 24px;
+  margin-top: 16px;
+  margin-bottom: 12px;
+  color: #000;
+}
+
+.impressum-section {
+  margin-bottom: 32px;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+}
+
+.impressum-section p {
+  font-size: 18px;
+  line-height: 1.6;
+  color: #000;
+  margin-bottom: 12px;
+}
+
+.impressum-section ul {
+  margin-left: 24px;
+  margin-top: 12px;
+}
+
+.impressum-section li {
+  font-size: 18px;
+  line-height: 1.8;
+  color: #000;
+  margin-bottom: 8px;
+}
+
+.impressum-section a {
+  color: #0066cc;
+  text-decoration: underline;
+}
+
+.impressum-section a:hover {
+  color: #004499;
+}
+
+.impressum-section strong {
+  font-weight: bold;
+}
+
+/* Zurück-Buttons */
+.back-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  height: 50px;
+  padding: 0 24px;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  background-color: rgba(255, 193, 7, 0.9);
+  border: 3px solid white;
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+  transition: all 0.2s ease-in-out;
+  text-decoration: none;
+  color: #000;
+  margin: 0 auto;
+  max-width: 300px;
+}
+
+.back-button:hover {
+  background-color: rgba(255, 215, 0, 1);
+  transform: scale(1.05);
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.7);
+}
+
+.back-button-top {
+  margin-bottom: 32px;
+}
+
+.back-button-bottom {
+  margin-top: 32px;
+}
+
+.back-icon {
+  font-size: 24px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .impressum-content {
+    padding: 24px;
+  }
+
+  .impressum-content h1 {
+    font-size: 36px;
+  }
+
+  .impressum-content h2 {
+    font-size: 28px;
+  }
+
+  .impressum-content h3 {
+    font-size: 22px;
+  }
+
+  .impressum-section p,
+  .impressum-section li {
+    font-size: 16px;
+  }
+
+  .back-button {
+    font-size: 18px;
+    padding: 0 20px;
+  }
+}

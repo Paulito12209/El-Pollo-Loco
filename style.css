@@ -10,8 +10,10 @@
 }
 
 h1 {
-  font-size: 48px;
+  font-size: 80px;
   text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+  margin-top: 80px;
+  margin-bottom: 40px;
 }
 
 body {
@@ -27,4 +29,421 @@ body {
 
 canvas {
   background-color: black;
+}
+
+/* ===== CANVAS WRAPPER ===== */
+.canvas-wrapper {
+  position: relative; /* Wichtig! Damit position: absolute funktioniert */
+  width: 720px;
+  height: 480px;
+}
+
+/* ===== START SCREEN ===== */
+.start-container {
+  background-image: url("../img/9_intro_outro_screens/start/startscreen_1.png");
+  background-size: 100% 100%;
+  width: 720px;
+  height: 480px;
+  /* border-radius: 10px; */
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1; /* Liegt über dem Canvas */
+}
+
+.start-button {
+  height: 40px;
+  width: 150px;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  background-color: rgba(255, 193, 7, 0.9);
+  border: 3px solid white;
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+  transition: all 0.2s ease-in-out;
+}
+
+.start-button:hover {
+  background-color: rgba(255, 215, 0, 1);
+  transform: scale(1.1);
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.7);
+}
+
+.start-button-line {
+  position: absolute;
+  top: 94%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+}
+
+.start-button-small {
+  height: 40px;
+  width: 50px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  background-color: rgba(255, 193, 7, 0.9);
+  border: 3px solid white;
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+  transition: all 0.2s ease-in-out;
+}
+
+.start-button-small:hover {
+  background-color: rgba(255, 215, 0, 1);
+  transform: scale(1.1);
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.7);
+}
+
+/* ===== HELPER CLASS ===== */
+.d-none {
+  display: none !important;
+}
+
+/* ===== GAMEPLAY INFO DIALOG (Natives <dialog> Element) ===== */
+
+.gameplay-dialog {
+  /* Position innerhalb des Canvas */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  /* gap: 16px; */
+
+  /* Größen-Constraints */
+  max-width: 660px; /* Canvas: 720px - 60px Margin */
+  max-height: 420px; /* Canvas: 480px - 60px Margin */
+  width: auto;
+  min-width: 300px;
+
+  /* Styling */
+  background-color: #ffd602;
+  padding: 24px;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0px 0px 16px rgba(0, 0, 0, 0.8);
+
+  /* Scrolling */
+  overflow-y: auto;
+
+  /* Animation */
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* Dialog ist offen (automatisch von showModal()) */
+.gameplay-dialog[open] {
+  opacity: 1;
+}
+
+/* Backdrop (Abdunklung) - funktioniert nur bei showModal() */
+.gameplay-dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(2px);
+}
+
+/* Schließen-Button (X) */
+.gameplay-dialog .close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  background-color: #ffa900;
+  color: black;
+  border: 2px solid #c35b17;
+  border-radius: 50%;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.2s ease-in-out;
+  z-index: 10;
+}
+
+.gameplay-dialog .close-btn:hover {
+  background-color: #fda036;
+  transform: scale(1.1);
+}
+
+/* Überschriften */
+.gameplay-dialog h2 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 32px;
+  text-align: center;
+  color: #000;
+}
+
+.gameplay-dialog h3 {
+  font-size: 28px;
+  /* margin-top: 12px; */
+  margin-bottom: 8px;
+  color: #000;
+}
+
+/* Info-Sections */
+.info-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.info-section {
+  padding: 12px;
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+}
+
+.info-section p {
+  margin: 8px 0;
+  font-size: 22px;
+  line-height: 1.5;
+  color: #000;
+}
+
+/* Scrollbar-Styling */
+.gameplay-dialog::-webkit-scrollbar {
+  width: 8px;
+}
+
+.gameplay-dialog::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+}
+
+.gameplay-dialog::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 10px;
+}
+
+.gameplay-dialog::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+/* ===== BURGER MENU BUTTON ===== */
+
+.burger-menu-btn {
+  position: absolute;
+  top: 10px;
+  left: 335px; /* Mittig zwischen Health Bar und Endboss Bar */
+  width: 50px;
+  height: 50px;
+
+  background-color: rgba(255, 193, 7, 0.9);
+  border: 3px solid white;
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+
+  font-size: 24px;
+  font-weight: bold;
+  color: black;
+  cursor: pointer;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  transition: all 0.2s ease-in-out;
+  z-index: 100; /* Über den Statusbars */
+}
+
+.burger-menu-btn:hover {
+  background-color: rgba(255, 215, 0, 1);
+  transform: scale(1.1);
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.7);
+}
+
+/* ===== BURGER MENU DIALOG ===== */
+
+.burger-dialog {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  max-width: 500px;
+  max-height: 420px;
+  width: auto;
+  min-width: 350px;
+
+  background-color: #ffd602;
+  padding: 32px 24px;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0px 0px 16px rgba(0, 0, 0, 0.8);
+
+  overflow-y: auto;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.burger-dialog[open] {
+  opacity: 1;
+}
+
+.burger-dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(2px);
+}
+
+/* Titel im Burger Dialog */
+.burger-dialog h2 {
+  margin: 0 0 24px 0;
+  font-size: 36px;
+  text-align: center;
+  color: #000;
+}
+
+/* Schließen-Button (wird vom .gameplay-dialog geerbt, aber zur Sicherheit) */
+.burger-dialog .close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  background-color: #ffa900;
+  color: black;
+  border: 2px solid #c35b17;
+  border-radius: 50%;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.2s ease-in-out;
+  z-index: 10;
+}
+
+.burger-dialog .close-btn:hover {
+  background-color: #fda036;
+  transform: scale(1.1);
+}
+
+/* ===== MENU ACTION BUTTONS ===== */
+
+.burger-menu-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.menu-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  height: 60px;
+  width: 100%;
+  padding: 0 20px;
+
+  background-color: rgba(255, 193, 7, 0.9);
+  border: 3px solid white;
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+
+  font-size: 20px;
+  font-weight: bold;
+  color: black;
+  cursor: pointer;
+
+  transition: all 0.2s ease-in-out;
+}
+
+.menu-action-btn:hover {
+  background-color: rgba(255, 215, 0, 1);
+  transform: scale(1.05);
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.7);
+}
+
+.menu-action-btn .btn-icon {
+  font-size: 28px;
+  min-width: 32px;
+  text-align: center;
+}
+
+.menu-action-btn .btn-label {
+  flex: 1;
+  text-align: left;
+  font-size: 22px;
+}
+
+/* Scrollbar im Burger Dialog */
+.burger-dialog::-webkit-scrollbar {
+  width: 8px;
+}
+
+.burger-dialog::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+}
+
+.burger-dialog::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 10px;
+}
+
+.burger-dialog::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+/* ===== CONTROLS DIALOG TABELLEN ===== */
+
+/* Tabellen-Grundstyle */
+.controls-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+}
+
+/* Zellen-Abstände */
+.controls-table tr {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.controls-table tr:last-child {
+  border-bottom: none;
+}
+
+.controls-table td {
+  padding: 8px 12px;
+  vertical-align: middle;
+}
+
+/* Linke Spalte (Tasten) - FESTE BREITE */
+.controls-table .key-cell {
+  width: 120px; /* Feste Breite für einheitliche Spalte */
+  min-width: 120px;
+  font-size: 22px; /* Größere Schrift */
+  font-weight: bold;
+  color: #c35b17;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+}
+
+/* Rechte Spalte (Beschreibung) */
+.controls-table .description-cell {
+  font-size: 20px; /* Größere Schrift */
+  color: #000;
+  text-align: left;
+  line-height: 1.4;
+}
+
+/* ===== IMPRESSUM LINK ===== */
+.impressum-link {
+  text-decoration: none;
+  display: inline-block;
+}
+
+.impressum-link button {
+  cursor: pointer;
 }

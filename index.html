@@ -39,6 +39,168 @@
   <body onload="init()">
     <h1>El Polllo Loco</h1>
 
-    <canvas id="canvas" width="720" height="480"></canvas>
+    <!-- 🔥 Canvas Wrapper für Start Screen + Canvas -->
+    <div id="canvasWrapper" class="canvas-wrapper">
+      <!-- Start Screen Container -->
+      <div id="startContainer" class="start-container">
+        <div class="start-button-line">
+          <button
+            class="start-button-small"
+            title="Instructions"
+            onclick="openGameplayInfo()"
+          >
+            ℹ️
+          </button>
+          <button
+            class="start-button-small"
+            title="Controller"
+            onclick="openControls()"
+          >
+            🎮
+          </button>
+          <button
+            id="startButton"
+            class="start-button"
+            onclick="startGame()"
+            title="Start game"
+          >
+            Start Game
+          </button>
+          <!-- 🔥 Sound Ein/Ausschalten -->
+          <button
+            id="muteButtonStart"
+            class="start-button-small"
+            title="Sound on/off"
+            onclick="toggleMute()"
+          >
+            🔇
+          </button>
+          <a href="impressum.html" class="impressum-link">
+            <button class="start-button-small" title="Legal notes">📝</button>
+          </a>
+        </div>
+      </div>
+
+      <canvas id="canvas" width="720" height="480"></canvas>
+
+      <!-- ☰ BURGER MENU BUTTON (nur sichtbar während des Spiels) -->
+      <button
+        id="burgerMenuBtn"
+        class="burger-menu-btn d-none"
+        onclick="openBurgerMenu()"
+        title="Menu"
+      >
+        ☰
+      </button>
+
+      <!-- ☰ BURGER MENU DIALOG -->
+      <dialog id="burgerMenuDialog" class="burger-dialog">
+        <!-- Schließen-Button -->
+        <button class="close-btn" onclick="closeBurgerMenu()">✕</button>
+
+        <!-- Titel -->
+        <h2>Menü</h2>
+
+        <!-- Menu Buttons -->
+        <div class="burger-menu-buttons">
+          <button class="menu-action-btn" onclick="openGameplayInfoFromMenu()">
+            <span class="btn-icon">ℹ️</span>
+            <span class="btn-label">Anleitung</span>
+          </button>
+
+          <!-- 🔥🎮 Controller Einstellungen -->
+          <button class="menu-action-btn" onclick="openControlsFromMenu()">
+            <span class="btn-icon">🎮</span>
+            <span class="btn-label">Steuerung</span>
+          </button>
+
+          <!-- 🔥 Sound Ein/Ausschalten -->
+          <button
+            id="muteButtonBurger"
+            class="menu-action-btn"
+            onclick="toggleMute()"
+          >
+            <span id="muteIconBurger" class="btn-icon">🔇</span>
+            <span id="muteLabelBurger" class="btn-label">Sound muten</span>
+          </button>
+
+          <button class="menu-action-btn" onclick="backToStartScreen()">
+            <span class="btn-icon">↩️</span>
+            <span class="btn-label">Zurück zum Start</span>
+          </button>
+        </div>
+      </dialog>
+
+      <!-- 🔥 GAMEPLAY INFO DIALOG (NEU - HIER EINFÜGEN!) -->
+      <dialog id="gameplayInfoDialog" class="gameplay-dialog">
+        <!-- Schließen-Button -->
+        <button class="close-btn" onclick="closeGameplayInfo()">✕</button>
+
+        <!-- Titel -->
+        <h2>Infos zum Gameplay</h2>
+
+        <div class="info-container">
+          <!-- Spielziel -->
+          <div class="info-section">
+            <h3>🎯 Spielziel</h3>
+            <p>
+              Besiege den Endboss, indem du Flaschen auf ihn wirfst oder auf ihn
+              springst. Sammle fleißig Flaschen & Münzen ein!
+            </p>
+          </div>
+
+          <!-- Gegner -->
+          <div class="info-section">
+            <h3>💥 Schaden</h3>
+            <p>
+              Der Endboss verliert nur 5% Leben, wenn du auf ihn springst. Du
+              verlierst dagegen 20% Leben
+            </p>
+          </div>
+        </div>
+      </dialog>
+      <!-- 🎮 CONTROLS DIALOG -->
+      <dialog id="controlsDialog" class="gameplay-dialog">
+        <!-- Schließen-Button -->
+        <button class="close-btn" onclick="closeControls()">✕</button>
+
+        <!-- Titel -->
+        <h2>🎮 Steuerung</h2>
+
+        <div class="info-container">
+          <!-- Bewegung -->
+          <div class="info-section">
+            <h3>🏃 Bewegung</h3>
+            <table class="controls-table">
+              <tr>
+                <td class="key-cell">◀︎ ▶︎</td>
+                <td class="description-cell">
+                  Pfeiltasten zum Laufen in entsprechende Richtung
+                </td>
+              </tr>
+            </table>
+          </div>
+
+          <!-- Angriff -->
+          <div class="info-section">
+            <h3>💥 Angriff</h3>
+            <table class="controls-table">
+              <tr>
+                <td class="key-cell">▲</td>
+                <td class="description-cell">
+                  Auf den Gegner von oben springen
+                </td>
+              </tr>
+              <tr>
+                <td class="key-cell">D</td>
+                <td class="description-cell">
+                  Flasche werfen (wenn gesammelt)
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </dialog>
+    </div>
   </body>
 </html>

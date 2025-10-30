@@ -26,6 +26,8 @@ class World {
     this.ctx = canvas.getContext("2d");
     this.canvas = canvas;
     this.keyboard = keyboard;
+
+    // ==== Sounds ====
     this.hurtSound = new Audio(
       "https://cdn.freesound.org/previews/262/262279_4902403-lq.mp3"
     ); // Sound bei Berührung mit Chicken ✅
@@ -73,8 +75,19 @@ class World {
       this.checkBottleCollisions(); // ✅
       this.checkBottleEnemyCollisions(); //✅
       this.checkEndbossAppearance(); //
-      this.updateEndbossDirection(); // ← NEU!
+      this.updateEndbossDirection(); //
+      this.checkEndGame(); // 🔥
     }, 200);
+  }
+
+  checkEndGame() {
+    let endboss = this.level.enemies.find((e) => e instanceof Endboss);
+
+    if (this.character.endGame || (endboss && endboss.endGame)) {
+      setTimeout(() => {
+        document.location.reload(); // Seite neu laden
+      }, 2000); // Nach 2 Sekunden
+    }
   }
 
   // ✅
@@ -200,7 +213,7 @@ class World {
   }
 
   draw() {
-    // ✅ 29-10-2025
+    // 🔥 30-10-2025
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.ctx.translate(this.camera_x, 0);
 

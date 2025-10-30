@@ -76,7 +76,7 @@ class Character extends MovableObject {
 
   world;
   speed = 4;
-  y = 80;
+  y = 180;
   endGame = false;
 
   constructor() {
@@ -143,6 +143,12 @@ class Character extends MovableObject {
       if (this.isDead()) {
         this.playAnimation(this.IMAGES_DEAD);
 
+        // 🔥 Walking Sound stoppen
+        if (!this.walkingSound.paused) {
+          this.walkingSound.pause();
+          this.walkingSound.currentTime = 0;
+        }
+
         // Nach 1 Sekunde → endGame Flag setzen
         if (!this.endGame) {
           setTimeout(() => {
@@ -151,8 +157,20 @@ class Character extends MovableObject {
         }
       } else if (this.isHurt()) {
         this.playAnimation(this.IMAGES_HURT);
+
+        // 🔥 Walking Sound stoppen
+        if (!this.walkingSound.paused) {
+          this.walkingSound.pause();
+          this.walkingSound.currentTime = 0;
+        }
       } else if (this.isAboveGround()) {
         this.playAnimation(this.IMAGES_JUMPING);
+
+        // 🔥 Walking Sound stoppen (beim Springen)
+        if (!this.walkingSound.paused) {
+          this.walkingSound.pause();
+          this.walkingSound.currentTime = 0;
+        }
       } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
         this.playAnimation(this.IMAGES_WALKING);
 
@@ -204,11 +222,12 @@ class Character extends MovableObject {
     return this.isAboveGround() && this.speedY < 0 && this.isColliding(enemy);
   }
 
-  hit() { // ✅ 29-10-2025 - 23:38
+  hit() {
+    // ✅ 29-10-2025 - 23:38
     this.energy -= 20;
     if (this.energy < 0) {
       this.energy = 0;
     }
-    this.lastHit = new Date().getTime(); 
+    this.lastHit = new Date().getTime();
   }
 }
