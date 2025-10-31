@@ -15,9 +15,9 @@ class EndbossBar extends DrawableObject {
     super();
     this.loadImages(this.IMAGES);
     this.x = 500; // Position oben rechts
-    this.y = 10;
+    this.y = 5;
     this.width = 200;
-    this.height = 60;
+    this.height = 55;
     this.setPercentage(100); // Boss startet mit vollem Leben
   }
 

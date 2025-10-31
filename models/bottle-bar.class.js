@@ -16,7 +16,7 @@ class BottleBar extends DrawableObject {
     this.x = 20;
     this.y = 100; // Unter der Coin Bar
     this.width = 200;
-    this.height = 60;
+    this.height = 50;
     this.setPercentage(0);
   }
 

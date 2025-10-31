@@ -5,18 +5,20 @@ let keyboard = new Keyboard();
 // 🔊 SOUND MANAGEMENT
 let isMuted = false;
 
-// function init() {
-//   // 30-10-2025 ✅
-//   canvas = document.getElementById("canvas");
-//   world = new World(canvas, keyboard);
-
-//   console.log("My Character ist", world.character);
-// }
-
 function init() {
   // 🔥 30-10-2025 19:15
   canvas = document.getElementById("canvas");
   // ❌ WICHTIG: world wird NICHT mehr hier erstellt!  ==> world wird erst in startGame() erstellt
+
+  // 📱 Skaliere Canvas auf Mobile-Geräten
+  if (window.matchMedia("(hover: none)").matches) {
+    resizeCanvasForMobile();
+
+    // Bei Orientierungs-Änderung neu skalieren
+    window.addEventListener("orientationchange", () => {
+      setTimeout(resizeCanvasForMobile, 100);
+    });
+  }
 
   // 🔊 Mute-Status aus LocalStorage laden
   loadMuteStatus();
@@ -37,7 +39,7 @@ function init() {
     });
   }
 
-  // Controls Dialog Backdrop Click 🔥 30-10-2025 
+  // Controls Dialog Backdrop Click 🔥 30-10-2025
   const controlsDialog = document.getElementById("controlsDialog");
   if (controlsDialog) {
     controlsDialog.addEventListener("click", (e) => {
@@ -52,6 +54,40 @@ function init() {
       }
     });
   }
+}
+
+/**
+ * Skaliert Canvas für Mobile-Geräte
+ */
+function resizeCanvasForMobile() {
+  const canvas = document.getElementById("canvas");
+  const wrapper = document.getElementById("canvasWrapper");
+
+  if (!canvas || !wrapper) return;
+
+  const viewportWidth = window.innerWidth;
+  const viewportHeight = window.innerHeight;
+
+  // Berechne Skalierung unter Beibehaltung des Seitenverhältnisses
+  const canvasRatio = 720 / 480; // Original Canvas-Größe
+  const viewportRatio = viewportWidth / viewportHeight;
+
+  let newWidth, newHeight;
+
+  if (viewportRatio > canvasRatio) {
+    // Viewport ist breiter -> Höhe voll ausnutzen
+    newHeight = viewportHeight;
+    newWidth = newHeight * canvasRatio;
+  } else {
+    // Viewport ist höher -> Breite voll ausnutzen
+    newWidth = viewportWidth;
+    newHeight = newWidth / canvasRatio;
+  }
+
+  wrapper.style.width = `${newWidth}px`;
+  wrapper.style.height = `${newHeight}px`;
+
+  console.log(`Canvas skaliert: ${newWidth}x${newHeight}`);
 }
 
 /**

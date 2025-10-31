@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Styles -->
     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="styles/mobile.css" />
     <link
       rel="icon"
       href="img/3_enemies_chicken/chicken_normal/1_walk/1_w.png"
@@ -37,9 +38,18 @@
     <script src="scripts/game.js"></script>
   </head>
   <body onload="init()">
+    <!-- 🔄 ROTATION HINWEIS (nur auf Mobile im Portrait sichtbar) -->
+    <div id="rotateScreen" class="rotate-screen">
+      <div class="rotate-message">
+        <div class="rotate-icon">🔄</div>
+        <h2>Bitte drehe dein Gerät!</h2>
+        <p>Dieses Spiel funktioniert nur im Querformat</p>
+      </div>
+    </div>
+
     <h1>El Polllo Loco</h1>
 
-    <!-- 🔥 Canvas Wrapper für Start Screen + Canvas -->
+    <!-- Canvas Wrapper für Start Screen + Canvas -->
     <div id="canvasWrapper" class="canvas-wrapper">
       <!-- Start Screen Container -->
       <div id="startContainer" class="start-container">
@@ -66,7 +76,7 @@
           >
             Start Game
           </button>
-          <!-- 🔥 Sound Ein/Ausschalten -->
+          <!-- Sound Ein/Ausschalten -->
           <button
             id="muteButtonStart"
             class="start-button-small"
@@ -108,13 +118,13 @@
             <span class="btn-label">Anleitung</span>
           </button>
 
-          <!-- 🔥🎮 Controller Einstellungen -->
+          <!-- 🎮 Controller Einstellungen -->
           <button class="menu-action-btn" onclick="openControlsFromMenu()">
             <span class="btn-icon">🎮</span>
             <span class="btn-label">Steuerung</span>
           </button>
 
-          <!-- 🔥 Sound Ein/Ausschalten -->
+          <!-- Sound Ein/Ausschalten -->
           <button
             id="muteButtonBurger"
             class="menu-action-btn"
@@ -131,7 +141,7 @@
         </div>
       </dialog>
 
-      <!-- 🔥 GAMEPLAY INFO DIALOG (NEU - HIER EINFÜGEN!) -->
+      <!-- GAMEPLAY INFO DIALOG (NEU - HIER EINFÜGEN!) -->
       <dialog id="gameplayInfoDialog" class="gameplay-dialog">
         <!-- Schließen-Button -->
         <button class="close-btn" onclick="closeGameplayInfo()">✕</button>
