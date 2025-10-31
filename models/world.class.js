@@ -15,10 +15,10 @@ class World {
 
   // ✅ Endscreens
   gameOverWin = new Endscreen(
-    "../img/9_intro_outro_screens/game_over/game over.png"
+    "img/9_intro_outro_screens/game_over/game over.png"
   );
   gameOverLost = new Endscreen(
-    "../img/9_intro_outro_screens/game_over/you lost.png"
+    "img/9_intro_outro_screens/game_over/you lost.png"
   );
 
   constructor(canvas, keyboard) {
@@ -31,19 +31,19 @@ class World {
     this.hurtSound = new Audio(
       "https://cdn.freesound.org/previews/262/262279_4902403-lq.mp3"
     ); // Sound bei Berührung mit Chicken ✅
-    this.hurtSound.volume = 0.5;
+    this.hurtSound.volume = 0.3;
     this.coinSound = new Audio(
       "https://cdn.freesound.org/previews/779/779239_15068221-lq.mp3"
     ); // Sound beim Einsammeln von Münzen ✅
-    this.coinSound.volume = 0.5;
+    this.coinSound.volume = 0.3;
     this.bottleSound = new Audio(
       "https://cdn.freesound.org/previews/326/326039_8238-lq.mp3"
     ); // Sound beim Einsammeln von Flaschen
-    this.bottleSound.volume = 0.5;
+    this.bottleSound.volume = 0.2;
     this.chickenDeathSound = new Audio(
       "https://cdn.freesound.org/previews/667/667601_2971579-lq.mp3"
     ); // Sound von sterbende Chickens
-    this.chickenDeathSound.volume = 0.5;
+    this.chickenDeathSound.volume = 0.3;
 
     this.draw();
     this.setWorld();

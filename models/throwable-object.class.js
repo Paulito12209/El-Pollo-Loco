@@ -4,7 +4,7 @@ class ThrowableObject extends MovableObject {
 
   constructor(x, y, direction) { // ✅ 29-10-2025 
     super().loadImage(
-      "../img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png"
+      "img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png"
     );
     this.x = x;
     this.y = y;
