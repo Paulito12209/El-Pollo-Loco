@@ -276,7 +276,7 @@ class World {
   }
 
   checkEndbossAppearance() {
-    if (this.character.x >= 600) {
+    if (this.character.x >= 4000) {
       this.endbossBar.isVisible = true;
     }
   }
