@@ -9,16 +9,16 @@ class EndbossBar extends DrawableObject {
   ];
 
   percentage = 100;
-  isVisible = false; // Am Anfang ausblenden ✅
+  isVisible = false;
 
   constructor() {
     super();
     this.loadImages(this.IMAGES);
-    this.x = 500; // Position oben rechts
-    this.y = 5;
+    this.x = 500;
+    this.y = 10;
     this.width = 200;
-    this.height = 55;
-    this.setPercentage(100); // Boss startet mit vollem Leben
+    this.height = 60;
+    this.setPercentage(100);
   }
 
   setPercentage(percentage) {

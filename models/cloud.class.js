@@ -4,14 +4,8 @@ class Cloud extends MovableObject {
   width = 400;
   speed = 0.15;
 
-  /**
-   * Erstellt eine Wolke mit konfigurierbarer Position
-   * @param {string} imagePath - Pfad zum Wolkenbild
-   * @param {number} x - horizontale Position
-   */
   constructor(imagePath, x) {
     super().loadImage(imagePath);
-
     this.x = x;
     this.animate();
   }

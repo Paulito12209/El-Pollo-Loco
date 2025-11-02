@@ -3,10 +3,10 @@ class Bottle extends MovableObject {
   height = 70;
 
   offset = {
-    top: 10, // Abstand vom oberen Rand zur Flasche
-    bottom: 10, // Abstand vom unteren Rand zur Flasche
-    left: 30, // Abstand vom linken Rand zur Flasche
-    right: 15 // Abstand vom rechten Rand zur Flasche
+    top: 10,
+    bottom: 10,
+    left: 30,
+    right: 15
   };
 
   IMAGES_BOTTLE = [

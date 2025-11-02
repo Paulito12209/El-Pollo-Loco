@@ -8,6 +8,8 @@ class MovableObject extends DrawableObject {
 
   applyGravity() {
     setInterval(() => {
+      if (isPaused) return;
+
       if (this.isAboveGround() || this.speedY > 0) {
         this.y -= this.speedY;
         this.speedY -= this.acceleration;
@@ -24,18 +26,13 @@ class MovableObject extends DrawableObject {
   }
 
   isColliding(mo) {
-    // Die 4 Bedingungen der Collision-Methode, angepasst mit Offsets
     return (
-      // Bedingung 1: Rechts → Links (x + width - offset.right > mo.x + mo.offset.left)
       this.x + this.width - (this.offset?.right || 0) >
         mo.x + (mo.offset?.left || 0) &&
-      // Bedingung 2: Unten → Oben (y + height - offset.bottom > mo.y + mo.offset.top)
       this.y + this.height - (this.offset?.bottom || 0) >
         mo.y + (mo.offset?.top || 0) &&
-      // Bedingung 3: Links → Rechts (x + offset.left < mo.x + mo.width - mo.offset.right)
       this.x + (this.offset?.left || 0) <
         mo.x + mo.width - (mo.offset?.right || 0) &&
-      // Bedingung 4: Oben → Unten (y + offset.top < mo.y + mo.height - mo.offset.bottom)
       this.y + (this.offset?.top || 0) <
         mo.y + mo.height - (mo.offset?.bottom || 0)
     );
@@ -51,8 +48,8 @@ class MovableObject extends DrawableObject {
   }
 
   isHurt() {
-    let timePassed = new Date().getTime() - this.lastHit; // Diff in ms
-    timePassed = timePassed / 1000; // Diff in s
+    let timePassed = new Date().getTime() - this.lastHit;
+    timePassed = timePassed / 1000;
     return timePassed < 1;
   }
 
@@ -61,7 +58,7 @@ class MovableObject extends DrawableObject {
   }
 
   playAnimation(images) {
-    let i = this.currentImage % images.length; // let i = 0 % 6; => 0, Rest 0
+    let i = this.currentImage % images.length;
     let path = images[i];
     this.img = this.imageCache[path];
     this.currentImage++;

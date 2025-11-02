@@ -10,7 +10,4 @@ class Keyboard extends MovableObject {
   constructor() {
     super();
   }
-
-  animate() {}
-  jump() {}
 }

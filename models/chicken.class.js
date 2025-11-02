@@ -13,28 +13,30 @@ class Chicken extends MovableObject {
 
   isDead = false;
 
-  // currentImage = 0;
-
   constructor(x) {
     super().loadImage("img/3_enemies_chicken/chicken_normal/1_walk/1_w.png");
     this.loadImages(this.IMAGES_WALKING);
     this.loadImage(this.IMAGE_DEAD);
 
-    this.x = x; // Nutzt definierten Wert aus Lv1.js
+    this.x = x;
     this.speed = 0.5;
     this.animate();
   }
 
   animate() {
     setInterval(() => {
+      if (isPaused) return;
+
       if (!this.isDead) {
         this.moveLeft();
       } else {
-        this.moveDown(); // Totes Chicken sinkt nach unten
+        this.moveDown();
       }
     }, 1000 / 60);
 
     setInterval(() => {
+      if (isPaused) return;
+
       if (this.isDead) {
         this.loadImage(this.IMAGE_DEAD);
       } else {
@@ -44,6 +46,6 @@ class Chicken extends MovableObject {
   }
 
   moveDown() {
-    this.y += 1; // Geschwindigkeit nach unten (1 Pixel pro Frame)
+    this.y += 1;
   }
 }

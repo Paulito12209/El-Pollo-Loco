@@ -3,7 +3,6 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- Styles -->
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="styles/mobile.css" />
     <link
@@ -12,21 +11,17 @@
       type="img2/x-icon"
     />
     <title>El Pollo Loco</title>
-
-    <!-- Scripts -->
     <script src="models/drawable-object.class.js"></script>
     <script src="models/movable-object.class.js"></script>
     <script src="models/character.class.js"></script>
     <script src="models/chicken.class.js"></script>
     <script src="models/cloud.class.js"></script>
-    <!-- Statusleisten & Sammelobjekte -->
     <script src="models/health-bar.class.js"></script>
     <script src="models/endboss-bar.class.js"></script>
     <script src="models/coin.class.js"></script>
     <script src="models/coin-bar.class.js"></script>
     <script src="models/bottle.class.js"></script>
     <script src="models/bottle-bar.class.js"></script>
-    <!-- Welt -->
     <script src="models/world.class.js"></script>
     <script src="models/background-object.class.js"></script>
     <script src="models/keyboard.class.js"></script>
@@ -37,21 +32,18 @@
     <script src="models/endscreen.class.js"></script>
     <script src="scripts/game.js"></script>
   </head>
-  <body onload="init()">
-    <!-- 🔄 ROTATION HINWEIS (nur auf Mobile im Portrait sichtbar) -->
-    <div id="rotateScreen" class="rotate-screen">
+  <body>
+    <div class="rotate-screen">
       <div class="rotate-message">
-        <div class="rotate-icon">🔄</div>
-        <h2>Bitte drehe dein Gerät!</h2>
-        <p>Dieses Spiel funktioniert nur im Querformat</p>
+        <div class="rotate-icon">📱</div>
+        <h2>Bitte drehe dein Gerät</h2>
+        <p>Dieses Spiel funktioniert am besten im Querformat</p>
       </div>
     </div>
 
     <h1>El Polllo Loco</h1>
 
-    <!-- Canvas Wrapper für Start Screen + Canvas -->
     <div id="canvasWrapper" class="canvas-wrapper">
-      <!-- Start Screen Container -->
       <div id="startContainer" class="start-container">
         <div class="start-button-line">
           <button
@@ -76,7 +68,6 @@
           >
             Start Game
           </button>
-          <!-- Sound Ein/Ausschalten -->
           <button
             id="muteButtonStart"
             class="start-button-small"
@@ -93,7 +84,6 @@
 
       <canvas id="canvas" width="720" height="480"></canvas>
 
-      <!-- ☰ BURGER MENU BUTTON (nur sichtbar während des Spiels) -->
       <button
         id="burgerMenuBtn"
         class="burger-menu-btn d-none"
@@ -103,82 +93,71 @@
         ☰
       </button>
 
-      <!-- ☰ BURGER MENU DIALOG -->
       <dialog id="burgerMenuDialog" class="burger-dialog">
-        <!-- Schließen-Button -->
         <button class="close-btn" onclick="closeBurgerMenu()">✕</button>
-
-        <!-- Titel -->
         <h2>Menü</h2>
-
-        <!-- Menu Buttons -->
-        <div class="burger-menu-buttons">
-          <button class="menu-action-btn" onclick="openGameplayInfoFromMenu()">
-            <span class="btn-icon">ℹ️</span>
-            <span class="btn-label">Anleitung</span>
-          </button>
-
-          <!-- 🎮 Controller Einstellungen -->
-          <button class="menu-action-btn" onclick="openControlsFromMenu()">
-            <span class="btn-icon">🎮</span>
-            <span class="btn-label">Steuerung</span>
-          </button>
-
-          <!-- Sound Ein/Ausschalten -->
-          <button
-            id="muteButtonBurger"
-            class="menu-action-btn"
-            onclick="toggleMute()"
+        <div class="card-container">
+          <div
+            class="info-card"
+            onclick="openGameplayInfoFromMenu()"
+            style="cursor: pointer"
           >
-            <span id="muteIconBurger" class="btn-icon">🔇</span>
-            <span id="muteLabelBurger" class="btn-label">Sound muten</span>
-          </button>
-
-          <button class="menu-action-btn" onclick="backToStartScreen()">
-            <span class="btn-icon">↩️</span>
-            <span class="btn-label">Zurück zum Start</span>
-          </button>
+            <div class="card-icon">ℹ️</div>
+            <div class="card-title">Anleitung</div>
+          </div>
+          <div
+            class="info-card"
+            onclick="openControlsFromMenu()"
+            style="cursor: pointer"
+          >
+            <div class="card-icon">🎮</div>
+            <div class="card-title">Steuerung</div>
+          </div>
+          <div class="info-card" onclick="toggleMute()" style="cursor: pointer">
+            <div class="card-icon" id="muteIconBurgerCard">🔇</div>
+            <div class="card-title" id="muteLabelBurgerCard">Sound muten</div>
+          </div>
+          <div
+            class="info-card"
+            onclick="backToStartScreen()"
+            style="cursor: pointer"
+          >
+            <div class="card-icon">↩️</div>
+            <div class="card-title">Spiel verlassen</div>
+          </div>
         </div>
       </dialog>
 
-      <!-- GAMEPLAY INFO DIALOG (NEU - HIER EINFÜGEN!) -->
       <dialog id="gameplayInfoDialog" class="gameplay-dialog">
-        <!-- Schließen-Button -->
         <button class="close-btn" onclick="closeGameplayInfo()">✕</button>
-
-        <!-- Titel -->
         <h2>Infos zum Gameplay</h2>
-
-        <div class="info-container">
-          <!-- Spielziel -->
-          <div class="info-section">
-            <h3>🎯 Spielziel</h3>
-            <p>
-              Besiege den Endboss, indem du Flaschen auf ihn wirfst oder auf ihn
-              springst. Sammle fleißig Flaschen & Münzen ein!
-            </p>
+        <div class="card-container">
+          <div class="info-card">
+            <div class="card-icon">🎯</div>
+            <div class="card-title">Spielziel</div>
+            <div class="card-description">
+              Besiege den Endboss mit Flaschen oder Sprüngen
+            </div>
           </div>
-
-          <!-- Gegner -->
-          <div class="info-section">
-            <h3>💥 Schaden</h3>
-            <p>
-              Der Endboss verliert nur 5% Leben, wenn du auf ihn springst. Du
-              verlierst dagegen 20% Leben
-            </p>
+          <div class="info-card">
+            <div class="card-icon">💥</div>
+            <div class="card-title">Schaden</div>
+            <div class="card-description">
+              Endboss: -5% beim Springen<br />Du: -20% Leben
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="card-icon">💰</div>
+            <div class="card-title">Sammeln</div>
+            <div class="card-description">Münzen & Flaschen einsammeln</div>
           </div>
         </div>
       </dialog>
-      <!-- 🎮 CONTROLS DIALOG -->
+
       <dialog id="controlsDialog" class="gameplay-dialog">
-        <!-- Schließen-Button -->
         <button class="close-btn" onclick="closeControls()">✕</button>
-
-        <!-- Titel -->
         <h2>🎮 Steuerung</h2>
-
         <div class="info-container">
-          <!-- Bewegung -->
           <div class="info-section">
             <h3>🏃 Bewegung</h3>
             <table class="controls-table">
@@ -190,8 +169,6 @@
               </tr>
             </table>
           </div>
-
-          <!-- Angriff -->
           <div class="info-section">
             <h3>💥 Angriff</h3>
             <table class="controls-table">
@@ -211,6 +188,25 @@
           </div>
         </div>
       </dialog>
+      <!-- ===== MOBILE TOUCH CONTROLS ===== -->
+      <div id="mobileControls" class="mobile-controls d-none">
+        <div class="control-panel left-panel">
+          <button class="control-btn" id="btnLeft" aria-label="Nach links">
+            ◀︎
+          </button>
+          <button class="control-btn" id="btnRight" aria-label="Nach rechts">
+            ▶︎
+          </button>
+        </div>
+        <div class="control-panel right-panel">
+          <button class="control-btn" id="btnJump" aria-label="Springen">
+            ▲
+          </button>
+          <button class="control-btn" id="btnThrow" aria-label="Werfen">
+            D
+          </button>
+        </div>
+      </div>
     </div>
   </body>
 </html>

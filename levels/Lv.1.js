@@ -1,24 +1,24 @@
 const level1 = new Level(
   [
     new Chicken(500),
-    // new Chicken(650),
-    // new Chicken(800),
-    // new Chicken(950),
-    // new Chicken(1100),
-    // new Chicken(1250),
-    // new Chicken(1400),
-    // new Chicken(1550),
-    // new Chicken(1700),
-    // new Chicken(1850),
-    // new Chicken(2000),
-    // new Chicken(2150),
-    // new Chicken(2300),
-    // new Chicken(2450),
-    // new Chicken(2600),
-    // new Chicken(2750),
-    // new Chicken(2900),
-    // new Chicken(3150),
-    // new Chicken(3300),
+    new Chicken(650),
+    new Chicken(800),
+    new Chicken(950),
+    new Chicken(1100),
+    new Chicken(1250),
+    new Chicken(1400),
+    new Chicken(1550),
+    new Chicken(1700),
+    new Chicken(1850),
+    new Chicken(2000),
+    new Chicken(2150),
+    new Chicken(2300),
+    new Chicken(2450),
+    new Chicken(2600),
+    new Chicken(2750),
+    new Chicken(2900),
+    new Chicken(3150),
+    new Chicken(3300),
     new Endboss(1500) // Achtung: Lebensanzeige evtl. anpassen!
   ],
   [
@@ -104,22 +104,16 @@ const level1 = new Level(
   [
     new Coin(300, 200),
     new Coin(400, 200),
-
     new Coin(500, 130),
     new Coin(600, 130),
-
     new Coin(700, 130),
     new Coin(800, 130),
-
     new Coin(900, 130),
     new Coin(1000, 130),
-
     new Coin(1100, 130),
     new Coin(1200, 130),
-
     new Coin(1300, 130),
     new Coin(1400, 130),
-
     new Coin(1500, 130),
     new Coin(1600, 130)
   ],

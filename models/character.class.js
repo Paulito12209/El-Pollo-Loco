@@ -63,14 +63,14 @@ class Character extends MovableObject {
   ];
 
   offset = {
-    top: 100, // Viel transparenter Raum über dem Kopf
-    bottom: 20, // Nur 20px unter den Füßen (siehe Screenshot!)
-    left: 20, // 25px von links
-    right: 20 // 25px von rechts
+    top: 100,
+    bottom: 20,
+    left: 20,
+    right: 20
   };
 
-  CAMERA_OFFSET = 100; // Character-Offset vom linken Rand
-  ENDBOSS_MIN_DISTANCE = 500; // Minimaler Abstand des Endboss vom Rand
+  CAMERA_OFFSET = 100;
+  ENDBOSS_MIN_DISTANCE = 500;
   lastActivity = Date.now();
   isLongIdle = false;
 
@@ -80,10 +80,8 @@ class Character extends MovableObject {
   endGame = false;
 
   constructor() {
-    // ✅ 29-10-2025 - 22:18
     super().loadImage("img/2_character_pepe/2_walk/W-21.png");
 
-    // SOUNDS:
     this.snoreSound = new Audio(
       "https://cdn.freesound.org/previews/796/796594_16895071-lq.mp3"
     );
@@ -107,8 +105,9 @@ class Character extends MovableObject {
   }
 
   animate() {
-    // ✅ 29-10-2025 - 21:49
     setInterval(() => {
+      if (isPaused) return;
+
       if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
         this.moveRight();
         this.otherDirection = false;
@@ -123,14 +122,11 @@ class Character extends MovableObject {
         this.jump();
         this.lastActivity = Date.now();
       }
-      // Berechne Kamera-Position
-      let desiredCameraX = -this.x + 100;
 
-      // Finde Endboss
+      let desiredCameraX = -this.x + 100;
       let endboss = this.world.level.enemies.find((e) => e instanceof Endboss);
 
       if (endboss) {
-        // Limit: Endboss muss mindestens 100px vom linken Rand entfernt sein
         let maxCameraX = -(endboss.x - 100);
         this.world.camera_x = Math.max(desiredCameraX, maxCameraX);
       } else {
@@ -139,17 +135,16 @@ class Character extends MovableObject {
     }, 1000 / 60);
 
     setInterval(() => {
-      // ✅ 29-10-2025 21:49
+      if (isPaused) return;
+
       if (this.isDead()) {
         this.playAnimation(this.IMAGES_DEAD);
 
-        // 🔥 Walking Sound stoppen
         if (!this.walkingSound.paused) {
           this.walkingSound.pause();
           this.walkingSound.currentTime = 0;
         }
 
-        // Nach 1 Sekunde → endGame Flag setzen
         if (!this.endGame) {
           setTimeout(() => {
             this.endGame = true;
@@ -158,7 +153,6 @@ class Character extends MovableObject {
       } else if (this.isHurt()) {
         this.playAnimation(this.IMAGES_HURT);
 
-        // 🔥 Walking Sound stoppen
         if (!this.walkingSound.paused) {
           this.walkingSound.pause();
           this.walkingSound.currentTime = 0;
@@ -166,7 +160,6 @@ class Character extends MovableObject {
       } else if (this.isAboveGround()) {
         this.playAnimation(this.IMAGES_JUMPING);
 
-        // 🔥 Walking Sound stoppen (beim Springen)
         if (!this.walkingSound.paused) {
           this.walkingSound.pause();
           this.walkingSound.currentTime = 0;
@@ -174,42 +167,37 @@ class Character extends MovableObject {
       } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
         this.playAnimation(this.IMAGES_WALKING);
 
-        // SCHNARCHEN STOPPEN (falls es läuft)
         if (!this.snoreSound.paused) {
           this.snoreSound.pause();
           this.snoreSound.currentTime = 0;
         }
 
-        // IDLE-Flag zurücksetzen
         if (this.isLongIdle) {
           this.isLongIdle = false;
         }
 
-        // Walking Sound starten (wenn noch nicht läuft)
         if (this.walkingSound.paused) {
           this.walkingSound.play();
         }
       } else {
-        // Walking Sound stoppen
         if (!this.walkingSound.paused) {
           this.walkingSound.pause();
           this.walkingSound.currentTime = 0;
         }
 
-        // IDLE Logik
         let timeSinceLastActivity = Date.now() - this.lastActivity;
 
         if (timeSinceLastActivity > 6000) {
           if (!this.isLongIdle) {
             this.isLongIdle = true;
-            this.snoreSound.play(); // Schnarchen starten
+            this.snoreSound.play();
           }
           this.playAnimation(this.IMAGES_LONG_IDLE);
         } else {
           if (this.isLongIdle) {
             this.isLongIdle = false;
-            this.snoreSound.pause(); // Schnarchen stoppen
-            this.snoreSound.currentTime = 0; // Zurückspulen
+            this.snoreSound.pause();
+            this.snoreSound.currentTime = 0;
           }
           this.playAnimation(this.IMAGES_IDLE);
         }
@@ -218,12 +206,10 @@ class Character extends MovableObject {
   }
 
   isJumpingOnEnemy(enemy) {
-    // ✅ 29-10-2025
     return this.isAboveGround() && this.speedY < 0 && this.isColliding(enemy);
   }
 
   hit() {
-    // ✅ 29-10-2025 - 23:38
     this.energy -= 20;
     if (this.energy < 0) {
       this.energy = 0;
