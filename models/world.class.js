@@ -1,6 +1,6 @@
 class World {
   character = new Character();
-  level = level1;
+  level = createLevel1();
   canvas;
   ctx;
   keyboard;
@@ -20,6 +20,8 @@ class World {
   gameOverLost = new Endscreen(
     "img/9_intro_outro_screens/game_over/you lost.png"
   );
+  runInterval;
+  animationId;
 
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext("2d");
@@ -29,7 +31,7 @@ class World {
     this.hurtSound = new Audio(
       "https://cdn.freesound.org/previews/262/262279_4902403-lq.mp3"
     );
-    this.hurtSound.volume = 0.3;
+    this.hurtSound.volume = 0.2;
     this.coinSound = new Audio(
       "https://cdn.freesound.org/previews/779/779239_15068221-lq.mp3"
     );
@@ -53,7 +55,7 @@ class World {
   }
 
   run() {
-    setInterval(() => {
+    this.runInterval = setInterval(() => {
       if (isPaused) return;
 
       this.checkThrowableObjects();
@@ -71,7 +73,9 @@ class World {
 
     if (this.character.endGame || (endboss && endboss.endGame)) {
       setTimeout(() => {
-        document.location.reload();
+        if (typeof resetToStartScreen === "function") {
+          resetToStartScreen();
+        }
       }, 2000);
     }
   }
@@ -103,6 +107,9 @@ class World {
             this.endbossBar.setPercentage(enemy.energy);
             this.chickenDeathSound.currentTime = 1;
             this.chickenDeathSound.play();
+            if (typeof enemy.playHurtSound === "function") {
+              enemy.playHurtSound();
+            }
           } else {
             enemy.isDead = true;
             this.chickenDeathSound.currentTime = 1;
@@ -132,8 +139,9 @@ class World {
   }
 
   updateBottleBar() {
-    let totalBottles = 7;
-    let percentage = (this.collectedBottles / totalBottles) * 100;
+    let totalBottles = this.level?.initialBottlesCount || 0;
+    let percentage =
+      totalBottles > 0 ? (this.collectedBottles / totalBottles) * 100 : 0;
     this.bottleBar.setPercentage(percentage);
   }
 
@@ -153,6 +161,9 @@ class World {
               this.endbossBar.setPercentage(enemy.energy);
               this.chickenDeathSound.currentTime = 1;
               this.chickenDeathSound.play();
+              if (typeof enemy.playHurtSound === "function") {
+                enemy.playHurtSound();
+              }
             }
           } else {
             if (!enemy.isDead) {
@@ -214,7 +225,7 @@ class World {
     }
 
     let self = this;
-    requestAnimationFrame(function () {
+    this.animationId = requestAnimationFrame(function () {
       self.draw();
     });
   }
@@ -235,9 +246,10 @@ class World {
     this.level.coins.forEach((coin, index) => {
       if (this.character.isColliding(coin)) {
         this.level.coins.splice(index, 1);
-        let totalCoins = 14;
+        let totalCoins = this.level?.initialCoinsCount || 0;
         let coinsCollected = totalCoins - this.level.coins.length;
-        let percentage = (coinsCollected / totalCoins) * 100;
+        let percentage =
+          totalCoins > 0 ? (coinsCollected / totalCoins) * 100 : 0;
         this.coinBar.setPercentage(percentage);
         this.coinSound.currentTime = 0.6;
         this.coinSound.play();
@@ -276,8 +288,57 @@ class World {
   }
 
   checkEndbossAppearance() {
-    if (this.character.x >= 4000) {
+    let endboss = this.level.enemies.find((e) => e instanceof Endboss);
+    if (endboss && this.character.x >= endboss.x - 400) {
       this.endbossBar.isVisible = true;
     }
+  }
+
+  rewrite() {
+    if (this.runInterval) {
+      clearInterval(this.runInterval);
+      this.runInterval = null;
+    }
+    if (this.animationId) {
+      cancelAnimationFrame(this.animationId);
+      this.animationId = null;
+    }
+
+    if (this.character) {
+      if (this.character.snoreSound) {
+        this.character.snoreSound.pause();
+        this.character.snoreSound.currentTime = 0;
+      }
+      if (this.character.walkingSound) {
+        this.character.walkingSound.pause();
+        this.character.walkingSound.currentTime = 0;
+      }
+    }
+    [
+      this.hurtSound,
+      this.coinSound,
+      this.bottleSound,
+      this.chickenDeathSound
+    ].forEach((s) => {
+      if (s) {
+        s.pause();
+        s.currentTime = 0;
+      }
+    });
+
+    const objects = []
+      .concat(this.level?.backgroundObjects || [])
+      .concat(this.level?.clouds || [])
+      .concat(this.level?.enemies || [])
+      .concat(this.level?.coins || [])
+      .concat(this.level?.bottles || [])
+      .concat(this.throwableObjects || [])
+      .concat([this.character].filter(Boolean));
+
+    objects.forEach((o) => {
+      if (o && typeof o.clearAllIntervals === "function") {
+        o.clearAllIntervals();
+      }
+    });
   }
 }

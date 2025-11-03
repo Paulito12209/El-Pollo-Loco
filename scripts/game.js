@@ -105,6 +105,7 @@ function openBurgerMenu() {
     dialog.showModal();
     isPaused = true;
     pauseAllSounds();
+    updateMuteButtons();
   }
 }
 
@@ -138,7 +139,7 @@ function backToStartScreen() {
   if (mobileControls) {
     mobileControls.classList.add("d-none");
   }
-  document.location.reload();
+  resetToStartScreen();
 }
 
 // ===== SOUND MANAGEMENT =====
@@ -148,6 +149,7 @@ function getAllSounds() {
   if (world && world.character) {
     if (world.character.snoreSound) sounds.push(world.character.snoreSound);
     if (world.character.walkingSound) sounds.push(world.character.walkingSound);
+    if (world.character.jumpSound) sounds.push(world.character.jumpSound);
   }
 
   if (world) {
@@ -155,6 +157,10 @@ function getAllSounds() {
     if (world.coinSound) sounds.push(world.coinSound);
     if (world.bottleSound) sounds.push(world.bottleSound);
     if (world.chickenDeathSound) sounds.push(world.chickenDeathSound);
+    if (world.level && world.level.enemies) {
+      const endboss = world.level.enemies.find((e) => e instanceof Endboss);
+      if (endboss && endboss.hurtSound) sounds.push(endboss.hurtSound);
+    }
   }
 
   return sounds;
@@ -215,6 +221,27 @@ function resumeAllSounds() {
   }
 }
 
+function resetToStartScreen() {
+  isPaused = false;
+  if (world && typeof world.rewrite === "function") {
+    world.rewrite();
+  }
+  world = null;
+
+  const burgerBtn = document.getElementById("burgerMenuBtn");
+  if (burgerBtn) {
+    burgerBtn.classList.add("d-none");
+  }
+  const mobileControls = document.getElementById("mobileControls");
+  if (mobileControls) {
+    mobileControls.classList.add("d-none");
+  }
+  showElement("startContainer");
+
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
 function toggleMute() {
   isMuted = !isMuted;
 
@@ -234,11 +261,18 @@ function updateMuteButtons() {
     startBtn.textContent = isMuted ? "🔊" : "🔇";
   }
 
-  const burgerIcon = document.getElementById("muteIconBurger");
-  const burgerLabel = document.getElementById("muteLabelBurger");
+  // Support both possible ID sets in the burger menu
+  const burgerIcon =
+    document.getElementById("muteIconBurger") ||
+    document.getElementById("muteIconBurgerCard");
+  const burgerLabel =
+    document.getElementById("muteLabelBurger") ||
+    document.getElementById("muteLabelBurgerCard");
 
-  if (burgerIcon && burgerLabel) {
+  if (burgerIcon) {
     burgerIcon.textContent = isMuted ? "🔊" : "🔇";
+  }
+  if (burgerLabel) {
     burgerLabel.textContent = isMuted ? "Sound aktivieren" : "Sound muten";
   }
 }

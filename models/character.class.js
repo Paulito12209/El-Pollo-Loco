@@ -93,6 +93,11 @@ class Character extends MovableObject {
     );
     this.walkingSound.volume = 0.3;
     this.walkingSound.loop = true;
+    this.walkingSound.playbackRate = 1.5;
+    this.jumpSound = new Audio(
+      "https://cdn.freesound.org/previews/805/805690_16337302-lq.mp3"
+    );
+    this.jumpSound.volume = 0.3;
 
     this.loadImages(this.IMAGES_WALKING);
     this.loadImages(this.IMAGES_JUMPING);
@@ -105,7 +110,7 @@ class Character extends MovableObject {
   }
 
   animate() {
-    setInterval(() => {
+    this.setGameInterval(() => {
       if (isPaused) return;
 
       if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
@@ -121,6 +126,12 @@ class Character extends MovableObject {
       if (this.world.keyboard.SPACE && !this.isAboveGround()) {
         this.jump();
         this.lastActivity = Date.now();
+        if (this.jumpSound) {
+          try {
+            this.jumpSound.currentTime = 0;
+            this.jumpSound.play();
+          } catch (e) {}
+        }
       }
 
       let desiredCameraX = -this.x + 100;
@@ -134,7 +145,7 @@ class Character extends MovableObject {
       }
     }, 1000 / 60);
 
-    setInterval(() => {
+    this.setGameInterval(() => {
       if (isPaused) return;
 
       if (this.isDead()) {

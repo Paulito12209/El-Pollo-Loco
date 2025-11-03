@@ -24,7 +24,7 @@ class Chicken extends MovableObject {
   }
 
   animate() {
-    setInterval(() => {
+    this.setGameInterval(() => {
       if (isPaused) return;
 
       if (!this.isDead) {
@@ -34,7 +34,7 @@ class Chicken extends MovableObject {
       }
     }, 1000 / 60);
 
-    setInterval(() => {
+    this.setGameInterval(() => {
       if (isPaused) return;
 
       if (this.isDead) {

@@ -69,11 +69,15 @@ class Endboss extends MovableObject {
     this.loadImages(this.IMAGES_DEATH);
     this.x = x;
     this.walkInterval = null;
+    this.hurtSound = new Audio(
+      "https://cdn.freesound.org/previews/770/770268_12983472-lq.mp3"
+    );
+    this.hurtSound.volume = 0.3;
     this.animate();
   }
 
   animate() {
-    setInterval(() => {
+    this.setGameInterval(() => {
       if (isPaused) return;
 
       if (this.isDead && this.hasPlayedDeathAnimation) {
@@ -81,7 +85,7 @@ class Endboss extends MovableObject {
       }
     }, 1000 / 60);
 
-    setInterval(() => {
+    this.setGameInterval(() => {
       if (isPaused) return;
 
       this.checkDeath();
@@ -119,7 +123,7 @@ class Endboss extends MovableObject {
     let targetWalkFrames = 8;
     let walkSpeed = 100;
 
-    this.walkInterval = setInterval(() => {
+    this.walkInterval = this.setGameInterval(() => {
       if (isPaused) return;
 
       if (this.otherDirection) {
@@ -150,6 +154,20 @@ class Endboss extends MovableObject {
       this.isAttacking = false;
       this.speed = 25;
     }, this.IMAGES_ATTACK.length * animationSpeed);
+  }
+
+  playHurtSound() {
+    if (this.hurtSound) {
+      try {
+        this.hurtSound.currentTime = 0;
+        this.hurtSound.play();
+      } catch (e) {}
+    }
+  }
+
+  hit() {
+    super.hit();
+    this.playHurtSound();
   }
 
   checkAlert() {

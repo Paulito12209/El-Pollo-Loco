@@ -7,6 +7,8 @@ class DrawableObject {
   imageCache = {};
   currentImage = 0;
   img;
+  // Track intervals created by this object for proper cleanup
+  _intervals = [];
 
   loadImage(path) {
     this.img = new Image();
@@ -40,5 +42,16 @@ class DrawableObject {
       img.style = "transform: scaleX(-1)";
       this.imageCache[path] = img;
     });
+  }
+
+  setGameInterval(callback, ms) {
+    const id = setInterval(callback, ms);
+    this._intervals.push(id);
+    return id;
+  }
+
+  clearAllIntervals() {
+    this._intervals.forEach((id) => clearInterval(id));
+    this._intervals = [];
   }
 }

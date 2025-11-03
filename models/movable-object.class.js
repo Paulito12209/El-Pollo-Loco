@@ -7,12 +7,21 @@ class MovableObject extends DrawableObject {
   lastHit = 0;
 
   applyGravity() {
-    setInterval(() => {
+    this.setGameInterval(() => {
       if (isPaused) return;
 
       if (this.isAboveGround() || this.speedY > 0) {
         this.y -= this.speedY;
         this.speedY -= this.acceleration;
+
+        // Clamp to ground to avoid sinking after landing
+        if (!(this instanceof ThrowableObject)) {
+          const groundY = 220;
+          if (this.y >= groundY && this.speedY <= 0) {
+            this.y = groundY;
+            this.speedY = 0;
+          }
+        }
       }
     }, 1000 / 25);
   }

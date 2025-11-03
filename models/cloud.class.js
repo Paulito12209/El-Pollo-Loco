@@ -15,7 +15,7 @@ class Cloud extends MovableObject {
   }
 
   moveLeft() {
-    setInterval(() => {
+    this.setGameInterval(() => {
       this.x -= this.speed;
     }, 1000 / 60);
   }
