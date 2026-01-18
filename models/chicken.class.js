@@ -1,3 +1,8 @@
+/**
+ * Represents a normal chicken enemy.
+ * Walks left across the screen and can be killed by jumping on it or throwing bottles.
+ * @extends MovableObject
+ */
 class Chicken extends MovableObject {
   y = 358;
   height = 60;
@@ -13,16 +18,24 @@ class Chicken extends MovableObject {
 
   isDead = false;
 
+  /**
+   * Creates a new chicken at the specified x position.
+   * Speed is randomized between 0.15 and 0.40 for variety.
+   * @param {number} x - The starting x position
+   */
   constructor(x) {
     super().loadImage("img/3_enemies_chicken/chicken_normal/1_walk/1_w.png");
     this.loadImages(this.IMAGES_WALKING);
     this.loadImage(this.IMAGE_DEAD);
 
     this.x = x;
-    this.speed = 0.5;
+    this.speed = 0.5 + (0.5 * Math.random());
     this.animate();
   }
 
+  /**
+   * Starts the chicken's movement and animation intervals.
+   */
   animate() {
     this.setGameInterval(() => {
       if (isPaused) return;
@@ -45,6 +58,9 @@ class Chicken extends MovableObject {
     }, 220);
   }
 
+  /**
+   * Moves the chicken downward (used when dead to fall off screen).
+   */
   moveDown() {
     this.y += 1;
   }

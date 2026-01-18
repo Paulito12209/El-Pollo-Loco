@@ -99,10 +99,12 @@
 }
 
 @keyframes rotate {
+
   0%,
   100% {
     transform: rotate(0deg);
   }
+
   50% {
     transform: rotate(90deg);
   }
@@ -126,7 +128,7 @@
       display: flex !important;
     }
 
-    body > *:not(.rotate-screen) {
+    body>*:not(.rotate-screen) {
       display: none !important;
     }
   }
@@ -211,7 +213,7 @@
     box-sizing: border-box;
     margin: 0;
     padding: 16px 12px;
-    overflow: hidden;
+    overflow-y: auto;
 
     top: 50%;
     left: 50%;
@@ -343,7 +345,7 @@
     box-sizing: border-box;
     margin: 0;
     padding: 16px 12px;
-    overflow: hidden;
+    overflow-y: auto;
 
     top: 50%;
     left: 50%;

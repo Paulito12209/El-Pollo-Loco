@@ -111,7 +111,6 @@ canvas {
   left: 50%;
   transform: translate(-50%, -50%);
   max-width: 660px;
-  max-height: 350px;
   width: auto;
   min-width: 300px;
   background-color: #ffd602;
@@ -119,7 +118,7 @@ canvas {
   border: none;
   border-radius: 15px;
   box-shadow: 0px 0px 16px rgba(0, 0, 0, 0.8);
-  overflow-y: auto;
+  overflow: hidden;
   opacity: 0;
   transition: opacity 0.3s ease-in-out;
 }
@@ -131,6 +130,12 @@ canvas {
 .gameplay-dialog::backdrop {
   background-color: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(2px);
+}
+
+/* Transparent backdrop when dialog is stacked over menu */
+.gameplay-dialog.over-menu::backdrop {
+  background-color: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(1px);
 }
 
 .gameplay-dialog .close-btn {
@@ -245,7 +250,6 @@ canvas {
   left: 50%;
   transform: translate(-50%, -50%);
   max-width: 500px;
-  max-height: 80vh;
   width: auto;
   min-width: 350px;
   background-color: #ffd602;
@@ -253,7 +257,7 @@ canvas {
   border: none;
   border-radius: 15px;
   box-shadow: 0px 0px 16px rgba(0, 0, 0, 0.8);
-  overflow-y: auto;
+  overflow: hidden;
   opacity: 0;
   transition: opacity 0.3s ease-in-out;
 }

@@ -1,22 +1,26 @@
+/**
+ * Creates Level 1 with all enemies, clouds, backgrounds, coins, and bottles.
+ * @returns {Level} A fully configured Level 1 instance
+ */
 function createLevel1() {
   const level = new Level(
     [
-      // === ZONE 1: Einstieg (500-1300) - Einzelne Chickens zum Warmwerden ===
+      // === ZONE 1: Introduction (500-1300) - Single chickens for warm-up ===
       new Chicken(500),
       new Chicken(900),
       new Chicken(1300),
 
-      // === ZONE 2: Erste Herausforderung (1500-2300) - Gruppen von 2-3 ===
+      // === ZONE 2: First challenge (1500-2300) - Groups of 2-3 ===
       new Chicken(1500),
       new Chicken(1700),
       new Chicken(2000),
       new Chicken(2200),
       new Chicken(2300),
 
-      // === ZONE 3: Pause (2700) - Vereinzelt ===
+      // === ZONE 3: Break (2700) - Scattered ===
       new Chicken(2700),
 
-      // === ZONE 4: Dichte Welle (3000-3800) - Viele Chickens! ===
+      // === ZONE 4: Dense wave (3000-3800) - Many chickens! ===
       new Chicken(3000),
       new Chicken(3200),
       new Chicken(3300),
@@ -24,11 +28,11 @@ function createLevel1() {
       new Chicken(3600),
       new Chicken(3800),
 
-      // === ZONE 5: Vor dem Endboss (4000-4300) - Letzte Gegner ===
+      // === ZONE 5: Before the endboss (4000-4300) - Final enemies ===
       new Chicken(4000),
       new Chicken(4300),
 
-      // === ZONE 6: Nach Endboss (4700-7700) - Optionale zusätzliche Gegner ===
+      // === ZONE 6: After endboss (4700-7700) - Optional additional enemies ===
       new Chicken(4700),
       new Chicken(5000),
       new Chicken(5300),
@@ -39,11 +43,11 @@ function createLevel1() {
       new Chicken(7500),
       new Chicken(7700),
 
-      // === ENDBOSS bei x=4500 ===
+      // === ENDBOSS at x=4500 ===
       new Endboss(4500)
     ],
     [
-      // Wolken über das gesamte Level verteilt
+      // Clouds distributed across the level
       new Cloud("img/5_background/layers/4_clouds/1.png", 0),
       new Cloud("img/5_background/layers/4_clouds/2.png", 720),
       new Cloud("img/5_background/layers/4_clouds/2.png", 1440),
@@ -56,7 +60,7 @@ function createLevel1() {
       new Cloud("img/5_background/layers/4_clouds/1.png", 6480)
     ],
     [
-      // Hintergrund-Objekte - erweitert für längeres Level
+      // Background objects - extended for longer level
       // x = -720
       new BackgroundObject("img/5_background/layers/air.png", -720),
       new BackgroundObject("img/5_background/layers/3_third_layer/2.png", -720),
@@ -160,8 +164,8 @@ function createLevel1() {
       new BackgroundObject("img/5_background/layers/1_first_layer/1.png", 7200)
     ],
     [
-      // === COINS: Mischungen aus Reihen und Stapeln ===
-      // Frühe Reihe (6 in einer Linie)
+      // === COINS: Mix of rows and stacks ===
+      // Early row (6 in a line)
       new Coin(600, 200),
       new Coin(680, 200),
       new Coin(760, 200),
@@ -169,32 +173,32 @@ function createLevel1() {
       new Coin(920, 200),
       new Coin(1000, 200),
 
-      // Reihe bei 1200-1600 (3 in einer Linie)
+      // Row at 1200-1600 (3 in a line)
       new Coin(1200, 130),
       new Coin(1400, 130),
       new Coin(1600, 130),
 
-      // Stapel (2-3 übereinander)
+      // Stacks (2-3 on top of each other)
       new Coin(2000, 200),
       new Coin(2000, 160),
       new Coin(2200, 220),
       new Coin(2200, 180),
       new Coin(2200, 140),
 
-      // Mittlere Reihe (4 in einer Linie)
+      // Middle row (4 in a line)
       new Coin(2600, 130),
       new Coin(2680, 130),
       new Coin(2760, 130),
       new Coin(2840, 130),
 
-      // Zickzack-Reihe
+      // Zigzag row
       new Coin(3000, 130),
       new Coin(3080, 170),
       new Coin(3160, 130),
       new Coin(3240, 170),
       new Coin(3320, 130),
 
-      // Vor dem Boss: dichte kurze Reihe
+      // Before the boss: dense short row
       new Coin(4400, 200),
       new Coin(4480, 200),
       new Coin(4560, 200),
@@ -210,7 +214,7 @@ function createLevel1() {
       new Bottle(4300, 350)
     ]
   );
-  
+
   level.level_end_x = 7200;
   return level;
 }

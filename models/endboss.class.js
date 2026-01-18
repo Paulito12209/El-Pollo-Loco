@@ -1,9 +1,14 @@
+/**
+ * Represents the final boss enemy - a giant chicken.
+ * Has complex AI with walking, attacking, hurt, and death states.
+ * @extends MovableObject
+ */
 class Endboss extends MovableObject {
   y = 230;
   width = 150;
   height = 200;
   energy = 100;
-  speed = 25;
+  speed = 20;
 
   isDead = false;
   hasPlayedDeathAnimation = false;
@@ -60,6 +65,10 @@ class Endboss extends MovableObject {
     "img/4_enemie_boss_chicken/5_dead/G26.png"
   ];
 
+  /**
+   * Creates a new Endboss at the specified x position.
+   * @param {number} x - The starting x position
+   */
   constructor(x) {
     super().loadImage(this.IMAGES_ALERT[0]);
     this.loadImages(this.IMAGES_WALKING);
@@ -76,6 +85,9 @@ class Endboss extends MovableObject {
     this.animate();
   }
 
+  /**
+   * Starts the boss's animation and state management intervals.
+   */
   animate() {
     this.setGameInterval(() => {
       if (isPaused) return;
@@ -107,6 +119,10 @@ class Endboss extends MovableObject {
     }, 150);
   }
 
+  /**
+   * Initiates the boss's counter-attack sequence after being hit.
+   * @param {Character} character - The player character to attack
+   */
   performCounterAttack(character) {
     if (isPaused || this.isWalking || this.isAttacking) return;
     this.lookAtCharacter(character);
@@ -117,10 +133,14 @@ class Endboss extends MovableObject {
     }, 300);
   }
 
+  /**
+   * Starts the walking phase of the counter-attack.
+   * Boss walks for 25 frames before attacking.
+   */
   startWalkingPhase() {
     this.isWalking = true;
     let walkFrames = 0;
-    let targetWalkFrames = 8;
+    let targetWalkFrames = 25;
     let walkSpeed = 100;
 
     this.walkInterval = this.setGameInterval(() => {
@@ -143,6 +163,9 @@ class Endboss extends MovableObject {
     }, walkSpeed);
   }
 
+  /**
+   * Plays the attack animation sequence.
+   */
   startAttackAnimation() {
     if (isPaused) return;
 
@@ -156,20 +179,29 @@ class Endboss extends MovableObject {
     }, this.IMAGES_ATTACK.length * animationSpeed);
   }
 
+  /**
+   * Plays the hurt sound effect with error handling.
+   */
   playHurtSound() {
     if (this.hurtSound) {
       try {
         this.hurtSound.currentTime = 0;
-        this.hurtSound.play();
-      } catch (e) {}
+        this.hurtSound.play().catch(() => { });
+      } catch (e) { }
     }
   }
 
+  /**
+   * Handles the boss being hit. Calls parent hit() and plays sound.
+   */
   hit() {
     super.hit();
     this.playHurtSound();
   }
 
+  /**
+   * Checks if boss should enter alert state (below 60% health).
+   */
   checkAlert() {
     if (this.energy <= 60 && !this.hasPlayedAlert) {
       this.playAlertAnimation();
@@ -177,6 +209,9 @@ class Endboss extends MovableObject {
     }
   }
 
+  /**
+   * Plays a special alert animation sequence.
+   */
   playAlertAnimation() {
     let imageIndex = 0;
     let interval = setInterval(() => {
@@ -190,6 +225,9 @@ class Endboss extends MovableObject {
     }, 500);
   }
 
+  /**
+   * Checks if boss should die and triggers end game.
+   */
   checkDeath() {
     if (this.energy <= 0 && !this.hasPlayedDeathAnimation) {
       this.isDead = true;
@@ -202,10 +240,17 @@ class Endboss extends MovableObject {
     }
   }
 
+  /**
+   * Moves the boss downward (used when dead to fall off screen).
+   */
   moveDown() {
     this.y += 2;
   }
 
+  /**
+   * Makes the boss face towards the character.
+   * @param {Character} character - The player character
+   */
   lookAtCharacter(character) {
     if (character.x < this.x) {
       this.otherDirection = false;

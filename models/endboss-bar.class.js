@@ -38,6 +38,8 @@ class EndbossBar extends DrawableObject {
       return 2;
     } else if (this.percentage >= 20) {
       return 1;
+    } else if (this.percentage > 0) {
+      return 1; // Show 20% image when 1-19% to indicate boss still has health
     } else {
       return 0;
     }

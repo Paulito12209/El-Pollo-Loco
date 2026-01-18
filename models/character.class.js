@@ -1,3 +1,8 @@
+/**
+ * Represents the main playable character (Pepe).
+ * Handles movement, jumping, animations, and sound effects.
+ * @extends MovableObject
+ */
 class Character extends MovableObject {
   IMAGES_WALKING = [
     "img/2_character_pepe/2_walk/W-21.png",
@@ -73,12 +78,17 @@ class Character extends MovableObject {
   ENDBOSS_MIN_DISTANCE = 500;
   lastActivity = Date.now();
   isLongIdle = false;
+  lastBounceTime = 0;
+  consecutiveBossJumps = 0;
 
   world;
   speed = 4;
   y = 180;
   endGame = false;
 
+  /**
+   * Creates a new Character instance with all sounds and images loaded.
+   */
   constructor() {
     super().loadImage("img/2_character_pepe/2_walk/W-21.png");
 
@@ -109,7 +119,12 @@ class Character extends MovableObject {
     this.animate();
   }
 
+  /**
+   * Starts the character's movement and animation intervals.
+   * Handles keyboard input, camera following, and state-based animations.
+   */
   animate() {
+    // Movement and camera update interval (60 FPS)
     this.setGameInterval(() => {
       if (isPaused) return;
 
@@ -123,17 +138,18 @@ class Character extends MovableObject {
         this.otherDirection = true;
         this.lastActivity = Date.now();
       }
-      if (this.world.keyboard.SPACE && !this.isAboveGround()) {
+      if (this.world.keyboard.UP && !this.isAboveGround()) {
         this.jump();
         this.lastActivity = Date.now();
         if (this.jumpSound) {
           try {
             this.jumpSound.currentTime = 0;
-            this.jumpSound.play();
-          } catch (e) {}
+            this.jumpSound.play().catch(() => { });
+          } catch (e) { }
         }
       }
 
+      // Camera follows character with endboss boundary
       let desiredCameraX = -this.x + 100;
       let endboss = this.world.level.enemies.find((e) => e instanceof Endboss);
 
@@ -145,6 +161,7 @@ class Character extends MovableObject {
       }
     }, 1000 / 60);
 
+    // Animation state interval
     this.setGameInterval(() => {
       if (isPaused) return;
 
@@ -188,9 +205,12 @@ class Character extends MovableObject {
         }
 
         if (this.walkingSound.paused) {
-          this.walkingSound.play();
+          try {
+            this.walkingSound.play().catch(() => { });
+          } catch (e) { }
         }
       } else {
+        // Idle state
         if (!this.walkingSound.paused) {
           this.walkingSound.pause();
           this.walkingSound.currentTime = 0;
@@ -199,12 +219,16 @@ class Character extends MovableObject {
         let timeSinceLastActivity = Date.now() - this.lastActivity;
 
         if (timeSinceLastActivity > 6000) {
+          // Long idle - play snoring
           if (!this.isLongIdle) {
             this.isLongIdle = true;
-            this.snoreSound.play();
+            try {
+              this.snoreSound.play().catch(() => { });
+            } catch (e) { }
           }
           this.playAnimation(this.IMAGES_LONG_IDLE);
         } else {
+          // Normal idle
           if (this.isLongIdle) {
             this.isLongIdle = false;
             this.snoreSound.pause();
@@ -216,10 +240,18 @@ class Character extends MovableObject {
     }, 120);
   }
 
+  /**
+   * Checks if the character is jumping on top of an enemy.
+   * @param {MovableObject} enemy - The enemy to check collision with
+   * @returns {boolean} True if character is landing on the enemy from above
+   */
   isJumpingOnEnemy(enemy) {
     return this.isAboveGround() && this.speedY < 0 && this.isColliding(enemy);
   }
 
+  /**
+   * Reduces character's energy by 20 when hit and records the hit timestamp.
+   */
   hit() {
     this.energy -= 20;
     if (this.energy < 0) {
