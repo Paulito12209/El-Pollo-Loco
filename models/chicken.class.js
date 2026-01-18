@@ -1,6 +1,6 @@
 /**
  * Represents a normal chicken enemy.
- * Walks left across the screen and can be killed by jumping on it or throwing bottles.
+ * Walks left and can be defeated by jumps or bottles.
  * @extends MovableObject
  */
 class Chicken extends MovableObject {
@@ -15,51 +15,56 @@ class Chicken extends MovableObject {
   ];
 
   IMAGE_DEAD = "img/3_enemies_chicken/chicken_normal/2_dead/dead.png";
-
   isDead = false;
 
   /**
-   * Creates a new chicken at the specified x position.
-   * Speed is randomized between 0.15 and 0.40 for variety.
-   * @param {number} x - The starting x position
+   * Creates a new chicken at the specified position.
+   * Speed is randomized for variety.
+   * @param {number} x - Starting X position
    */
   constructor(x) {
     super().loadImage("img/3_enemies_chicken/chicken_normal/1_walk/1_w.png");
     this.loadImages(this.IMAGES_WALKING);
     this.loadImage(this.IMAGE_DEAD);
-
     this.x = x;
     this.speed = 0.5 + (0.5 * Math.random());
     this.animate();
   }
 
   /**
-   * Starts the chicken's movement and animation intervals.
+   * Starts the movement and animation intervals.
    */
   animate() {
-    this.setGameInterval(() => {
-      if (isPaused) return;
-
-      if (!this.isDead) {
-        this.moveLeft();
-      } else {
-        this.moveDown();
-      }
-    }, 1000 / 60);
-
-    this.setGameInterval(() => {
-      if (isPaused) return;
-
-      if (this.isDead) {
-        this.loadImage(this.IMAGE_DEAD);
-      } else {
-        this.playAnimation(this.IMAGES_WALKING);
-      }
-    }, 220);
+    this.setGameInterval(() => this.handleMovement(), 1000 / 60);
+    this.setGameInterval(() => this.handleAnimation(), 220);
   }
 
   /**
-   * Moves the chicken downward (used when dead to fall off screen).
+   * Handles the movement logic.
+   */
+  handleMovement() {
+    if (isPaused) return;
+    if (this.isDead) {
+      this.moveDown();
+    } else {
+      this.moveLeft();
+    }
+  }
+
+  /**
+   * Handles the animation logic.
+   */
+  handleAnimation() {
+    if (isPaused) return;
+    if (this.isDead) {
+      this.loadImage(this.IMAGE_DEAD);
+    } else {
+      this.playAnimation(this.IMAGES_WALKING);
+    }
+  }
+
+  /**
+   * Moves the chicken downward (after death).
    */
   moveDown() {
     this.y += 1;

@@ -1,3 +1,8 @@
+/**
+ * Represents a collectible coin.
+ * Animates between two images.
+ * @extends MovableObject
+ */
 class Coin extends MovableObject {
   width = 100;
   height = 100;
@@ -11,6 +16,11 @@ class Coin extends MovableObject {
 
   IMAGES_COIN = ["img/8_coin/coin_1.png", "img/8_coin/coin_2.png"];
 
+  /**
+   * Creates a new coin at the specified position.
+   * @param {number} x - X position
+   * @param {number} y - Y position
+   */
   constructor(x, y) {
     super().loadImage("img/8_coin/coin_1.png");
     this.loadImages(this.IMAGES_COIN);
@@ -19,6 +29,9 @@ class Coin extends MovableObject {
     this.animate();
   }
 
+  /**
+   * Starts the coin animation loop.
+   */
   animate() {
     setInterval(() => {
       this.playAnimation(this.IMAGES_COIN);

@@ -1,5 +1,5 @@
 /**
- * Represents the main playable character (Pepe).
+ * Represents the playable character (Pepe).
  * Handles movement, jumping, animations, and sound effects.
  * @extends MovableObject
  */
@@ -67,190 +67,266 @@ class Character extends MovableObject {
     "img/2_character_pepe/1_idle/long_idle/I-20.png"
   ];
 
-  offset = {
-    top: 100,
-    bottom: 20,
-    left: 20,
-    right: 20
-  };
+  offset = { top: 100, bottom: 20, left: 20, right: 20 };
 
-  CAMERA_OFFSET = 100;
-  ENDBOSS_MIN_DISTANCE = 500;
   lastActivity = Date.now();
   isLongIdle = false;
   lastBounceTime = 0;
   consecutiveBossJumps = 0;
-
   world;
   speed = 4;
   y = 180;
   endGame = false;
 
   /**
-   * Creates a new Character instance with all sounds and images loaded.
+   * Creates a new Character instance.
    */
   constructor() {
     super().loadImage("img/2_character_pepe/2_walk/W-21.png");
+    this.initializeSounds();
+    this.loadAllImages();
+    this.applyGravity();
+    this.animate();
+  }
 
-    this.snoreSound = new Audio(
-      "https://cdn.freesound.org/previews/796/796594_16895071-lq.mp3"
-    );
+  /**
+   * Initializes all sound effects.
+   */
+  initializeSounds() {
+    this.snoreSound = new Audio("https://cdn.freesound.org/previews/796/796594_16895071-lq.mp3");
     this.snoreSound.volume = 0.3;
     this.snoreSound.loop = true;
-
-    this.walkingSound = new Audio(
-      "https://cdn.freesound.org/previews/55/55690_321967-lq.mp3"
-    );
+    this.walkingSound = new Audio("https://cdn.freesound.org/previews/55/55690_321967-lq.mp3");
     this.walkingSound.volume = 0.3;
     this.walkingSound.loop = true;
     this.walkingSound.playbackRate = 1.5;
-    this.jumpSound = new Audio(
-      "https://cdn.freesound.org/previews/805/805690_16337302-lq.mp3"
-    );
+    this.jumpSound = new Audio("https://cdn.freesound.org/previews/805/805690_16337302-lq.mp3");
     this.jumpSound.volume = 0.3;
+  }
 
+  /**
+   * Loads all animation images.
+   */
+  loadAllImages() {
     this.loadImages(this.IMAGES_WALKING);
     this.loadImages(this.IMAGES_JUMPING);
     this.loadImages(this.IMAGES_DEAD);
     this.loadImages(this.IMAGES_HURT);
     this.loadImages(this.IMAGES_IDLE);
     this.loadImages(this.IMAGES_LONG_IDLE);
-    this.applyGravity();
-    this.animate();
   }
 
   /**
-   * Starts the character's movement and animation intervals.
-   * Handles keyboard input, camera following, and state-based animations.
+   * Starts the animation intervals.
    */
   animate() {
-    // Movement and camera update interval (60 FPS)
-    this.setGameInterval(() => {
-      if (isPaused) return;
-
-      if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
-        this.moveRight();
-        this.otherDirection = false;
-        this.lastActivity = Date.now();
-      }
-      if (this.world.keyboard.LEFT && this.x > 0) {
-        this.moveLeft();
-        this.otherDirection = true;
-        this.lastActivity = Date.now();
-      }
-      if (this.world.keyboard.UP && !this.isAboveGround()) {
-        this.jump();
-        this.lastActivity = Date.now();
-        if (this.jumpSound) {
-          try {
-            this.jumpSound.currentTime = 0;
-            this.jumpSound.play().catch(() => { });
-          } catch (e) { }
-        }
-      }
-
-      // Camera follows character with endboss boundary
-      let desiredCameraX = -this.x + 100;
-      let endboss = this.world.level.enemies.find((e) => e instanceof Endboss);
-
-      if (endboss) {
-        let maxCameraX = -(endboss.x - 100);
-        this.world.camera_x = Math.max(desiredCameraX, maxCameraX);
-      } else {
-        this.world.camera_x = desiredCameraX;
-      }
-    }, 1000 / 60);
-
-    // Animation state interval
-    this.setGameInterval(() => {
-      if (isPaused) return;
-
-      if (this.isDead()) {
-        this.playAnimation(this.IMAGES_DEAD);
-
-        if (!this.walkingSound.paused) {
-          this.walkingSound.pause();
-          this.walkingSound.currentTime = 0;
-        }
-
-        if (!this.endGame) {
-          setTimeout(() => {
-            this.endGame = true;
-          }, 1000);
-        }
-      } else if (this.isHurt()) {
-        this.playAnimation(this.IMAGES_HURT);
-
-        if (!this.walkingSound.paused) {
-          this.walkingSound.pause();
-          this.walkingSound.currentTime = 0;
-        }
-      } else if (this.isAboveGround()) {
-        this.playAnimation(this.IMAGES_JUMPING);
-
-        if (!this.walkingSound.paused) {
-          this.walkingSound.pause();
-          this.walkingSound.currentTime = 0;
-        }
-      } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
-        this.playAnimation(this.IMAGES_WALKING);
-
-        if (!this.snoreSound.paused) {
-          this.snoreSound.pause();
-          this.snoreSound.currentTime = 0;
-        }
-
-        if (this.isLongIdle) {
-          this.isLongIdle = false;
-        }
-
-        if (this.walkingSound.paused) {
-          try {
-            this.walkingSound.play().catch(() => { });
-          } catch (e) { }
-        }
-      } else {
-        // Idle state
-        if (!this.walkingSound.paused) {
-          this.walkingSound.pause();
-          this.walkingSound.currentTime = 0;
-        }
-
-        let timeSinceLastActivity = Date.now() - this.lastActivity;
-
-        if (timeSinceLastActivity > 6000) {
-          // Long idle - play snoring
-          if (!this.isLongIdle) {
-            this.isLongIdle = true;
-            try {
-              this.snoreSound.play().catch(() => { });
-            } catch (e) { }
-          }
-          this.playAnimation(this.IMAGES_LONG_IDLE);
-        } else {
-          // Normal idle
-          if (this.isLongIdle) {
-            this.isLongIdle = false;
-            this.snoreSound.pause();
-            this.snoreSound.currentTime = 0;
-          }
-          this.playAnimation(this.IMAGES_IDLE);
-        }
-      }
-    }, 120);
+    this.setGameInterval(() => this.handleMovementAndCamera(), 1000 / 60);
+    this.setGameInterval(() => this.handleAnimationState(), 120);
   }
 
   /**
-   * Checks if the character is jumping on top of an enemy.
-   * @param {MovableObject} enemy - The enemy to check collision with
-   * @returns {boolean} True if character is landing on the enemy from above
+   * Handles movement and camera update.
+   */
+  handleMovementAndCamera() {
+    if (isPaused) return;
+    this.handleHorizontalMovement();
+    this.handleJumpInput();
+    this.updateCameraPosition();
+  }
+
+  /**
+   * Handles horizontal movement (left/right).
+   */
+  handleHorizontalMovement() {
+    if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
+      this.moveRight();
+      this.otherDirection = false;
+      this.lastActivity = Date.now();
+    }
+    if (this.world.keyboard.LEFT && this.x > 0) {
+      this.moveLeft();
+      this.otherDirection = true;
+      this.lastActivity = Date.now();
+    }
+  }
+
+  /**
+   * Handles jump input.
+   */
+  handleJumpInput() {
+    if (this.world.keyboard.UP && !this.isAboveGround()) {
+      this.jump();
+      this.lastActivity = Date.now();
+      this.playJumpSound();
+    }
+  }
+
+  /**
+   * Plays the jump sound.
+   */
+  playJumpSound() {
+    if (this.jumpSound) {
+      try {
+        this.jumpSound.currentTime = 0;
+        this.jumpSound.play().catch(() => { });
+      } catch (e) { }
+    }
+  }
+
+  /**
+   * Updates the camera position.
+   */
+  updateCameraPosition() {
+    let desiredCameraX = -this.x + 100;
+    let endboss = this.world.level.enemies.find((e) => e instanceof Endboss);
+    if (endboss) {
+      let maxCameraX = -(endboss.x - 100);
+      this.world.camera_x = Math.max(desiredCameraX, maxCameraX);
+    } else {
+      this.world.camera_x = desiredCameraX;
+    }
+  }
+
+  /**
+   * Handles the current animation state.
+   */
+  handleAnimationState() {
+    if (isPaused) return;
+    if (this.isDead()) return this.playDeadState();
+    if (this.isHurt()) return this.playHurtState();
+    if (this.isAboveGround()) return this.playJumpState();
+    if (this.isMoving()) return this.playWalkState();
+    this.playIdleState();
+  }
+
+  /**
+   * Checks if the character is moving.
+   * @returns {boolean} True if moving
+   */
+  isMoving() {
+    return this.world.keyboard.RIGHT || this.world.keyboard.LEFT;
+  }
+
+  /**
+   * Plays the dead state.
+   */
+  playDeadState() {
+    this.playAnimation(this.IMAGES_DEAD);
+    this.stopWalkingSound();
+    if (!this.endGame) {
+      setTimeout(() => { this.endGame = true; }, 1000);
+    }
+  }
+
+  /**
+   * Plays the hurt state.
+   */
+  playHurtState() {
+    this.playAnimation(this.IMAGES_HURT);
+    this.stopWalkingSound();
+  }
+
+  /**
+   * Plays the jump state.
+   */
+  playJumpState() {
+    this.playAnimation(this.IMAGES_JUMPING);
+    this.stopWalkingSound();
+  }
+
+  /**
+   * Plays the walk state.
+   */
+  playWalkState() {
+    this.playAnimation(this.IMAGES_WALKING);
+    this.stopSnoreSound();
+    this.resetLongIdle();
+    this.startWalkingSound();
+  }
+
+  /**
+   * Plays the idle state (short or long).
+   */
+  playIdleState() {
+    this.stopWalkingSound();
+    let timeSinceLastActivity = Date.now() - this.lastActivity;
+    if (timeSinceLastActivity > 6000) {
+      this.playLongIdleAnimation();
+    } else {
+      this.playNormalIdleAnimation();
+    }
+  }
+
+  /**
+   * Plays the long idle animation with snoring.
+   */
+  playLongIdleAnimation() {
+    if (!this.isLongIdle) {
+      this.isLongIdle = true;
+      try { this.snoreSound.play().catch(() => { }); } catch (e) { }
+    }
+    this.playAnimation(this.IMAGES_LONG_IDLE);
+  }
+
+  /**
+   * Plays the normal idle animation.
+   */
+  playNormalIdleAnimation() {
+    this.resetLongIdle();
+    this.playAnimation(this.IMAGES_IDLE);
+  }
+
+  /**
+   * Stops the walking sound.
+   */
+  stopWalkingSound() {
+    if (!this.walkingSound.paused) {
+      this.walkingSound.pause();
+      this.walkingSound.currentTime = 0;
+    }
+  }
+
+  /**
+   * Starts the walking sound.
+   */
+  startWalkingSound() {
+    if (this.walkingSound.paused) {
+      try { this.walkingSound.play().catch(() => { }); } catch (e) { }
+    }
+  }
+
+  /**
+   * Stops the snore sound.
+   */
+  stopSnoreSound() {
+    if (!this.snoreSound.paused) {
+      this.snoreSound.pause();
+      this.snoreSound.currentTime = 0;
+    }
+  }
+
+  /**
+   * Resets the long idle status.
+   */
+  resetLongIdle() {
+    if (this.isLongIdle) {
+      this.isLongIdle = false;
+      this.snoreSound.pause();
+      this.snoreSound.currentTime = 0;
+    }
+  }
+
+  /**
+   * Checks if the character is jumping on an enemy.
+   * @param {MovableObject} enemy - The enemy
+   * @returns {boolean} True if landing from above
    */
   isJumpingOnEnemy(enemy) {
     return this.isAboveGround() && this.speedY < 0 && this.isColliding(enemy);
   }
 
   /**
-   * Reduces character's energy by 20 when hit and records the hit timestamp.
+   * Reduces energy when hit.
    */
   hit() {
     this.energy -= 20;

@@ -1,6 +1,6 @@
 /**
- * Status bar displaying the player's collected bottles.
- * Shows 0-100% based on bottles collected vs total available.
+ * Status bar for collected bottles.
+ * Shows 0-100% based on collected vs. available bottles.
  * @extends DrawableObject
  */
 class BottleBar extends DrawableObject {
@@ -16,7 +16,7 @@ class BottleBar extends DrawableObject {
   percentage = 0;
 
   /**
-   * Creates a new bottle status bar at the default position.
+   * Creates a new bottle bar.
    */
   constructor() {
     super();
@@ -29,7 +29,7 @@ class BottleBar extends DrawableObject {
   }
 
   /**
-   * Updates the bar to show the given percentage.
+   * Updates the display to the given percentage.
    * @param {number} percentage - Value from 0-100
    */
   setPercentage(percentage) {
@@ -39,25 +39,17 @@ class BottleBar extends DrawableObject {
   }
 
   /**
-   * Resolves which image index to use based on current percentage.
-   * Ensures bar shows at least 20% if any bottles remain.
+   * Determines the appropriate image index based on percentage.
+   * Shows at least 20% if bottles are available.
    * @returns {number} Index of the image to display (0-5)
    */
   resolveImageIndex() {
-    if (this.percentage == 100) {
-      return 5;
-    } else if (this.percentage >= 80) {
-      return 4;
-    } else if (this.percentage >= 60) {
-      return 3;
-    } else if (this.percentage >= 40) {
-      return 2;
-    } else if (this.percentage >= 20) {
-      return 1;
-    } else if (this.percentage > 0) {
-      return 1;
-    } else {
-      return 0;
-    }
+    if (this.percentage == 100) return 5;
+    if (this.percentage >= 80) return 4;
+    if (this.percentage >= 60) return 3;
+    if (this.percentage >= 40) return 2;
+    if (this.percentage >= 20) return 1;
+    if (this.percentage > 0) return 1;
+    return 0;
   }
 }

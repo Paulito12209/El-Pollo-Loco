@@ -1,6 +1,6 @@
 /**
- * Represents the final boss enemy - a giant chicken.
- * Has complex AI with walking, attacking, hurt, and death states.
+ * Represents the endboss - a giant chicken.
+ * Has complex AI with walking, attack, hurt, and death states.
  * @extends MovableObject
  */
 class Endboss extends MovableObject {
@@ -17,12 +17,7 @@ class Endboss extends MovableObject {
   isWalking = false;
   endGame = false;
 
-  offset = {
-    top: 40,
-    bottom: 20,
-    left: 10,
-    right: 20
-  };
+  offset = { top: 40, bottom: 20, left: 10, right: 20 };
 
   IMAGES_WALKING = [
     "img/4_enemie_boss_chicken/1_walk/G1.png",
@@ -66,67 +61,98 @@ class Endboss extends MovableObject {
   ];
 
   /**
-   * Creates a new Endboss at the specified x position.
-   * @param {number} x - The starting x position
+   * Creates a new endboss at the specified position.
+   * @param {number} x - Starting X position
    */
   constructor(x) {
     super().loadImage(this.IMAGES_ALERT[0]);
+    this.loadAllImages();
+    this.x = x;
+    this.walkInterval = null;
+    this.initializeSound();
+    this.animate();
+  }
+
+  /**
+   * Loads all animation images.
+   */
+  loadAllImages() {
     this.loadImages(this.IMAGES_WALKING);
     this.loadImages(this.IMAGES_ALERT);
     this.loadImages(this.IMAGES_HURT);
     this.loadImages(this.IMAGES_ATTACK);
     this.loadImages(this.IMAGES_DEATH);
-    this.x = x;
-    this.walkInterval = null;
-    this.hurtSound = new Audio(
-      "https://cdn.freesound.org/previews/770/770268_12983472-lq.mp3"
-    );
-    this.hurtSound.volume = 0.3;
-    this.animate();
   }
 
   /**
-   * Starts the boss's animation and state management intervals.
+   * Initializes the hurt sound.
+   */
+  initializeSound() {
+    this.hurtSound = new Audio("https://cdn.freesound.org/previews/770/770268_12983472-lq.mp3");
+    this.hurtSound.volume = 0.3;
+  }
+
+  /**
+   * Starts the animation intervals.
    */
   animate() {
-    this.setGameInterval(() => {
-      if (isPaused) return;
-
-      if (this.isDead && this.hasPlayedDeathAnimation) {
-        this.moveDown();
-      }
-    }, 1000 / 60);
-
-    this.setGameInterval(() => {
-      if (isPaused) return;
-
-      this.checkDeath();
-      this.checkAlert();
-
-      if (this.isDead && !this.hasPlayedDeathAnimation) {
-        this.playAnimation(this.IMAGES_DEATH);
-      } else if (!this.isDead) {
-        if (this.isHurt() && !this.isWalking && !this.isAttacking) {
-          this.playAnimation(this.IMAGES_HURT);
-        } else if (this.isAttacking) {
-          this.playAnimation(this.IMAGES_ATTACK);
-        } else if (this.isWalking) {
-          this.playAnimation(this.IMAGES_WALKING);
-        } else {
-          this.playAnimation(this.IMAGES_ALERT);
-        }
-      }
-    }, 150);
+    this.setGameInterval(() => this.handleMovement(), 1000 / 60);
+    this.setGameInterval(() => this.handleAnimationState(), 150);
   }
 
   /**
-   * Initiates the boss's counter-attack sequence after being hit.
-   * @param {Character} character - The player character to attack
+   * Handles the movement logic.
+   */
+  handleMovement() {
+    if (isPaused) return;
+    if (this.isDead && this.hasPlayedDeathAnimation) {
+      this.moveDown();
+    }
+  }
+
+  /**
+   * Handles the current animation state.
+   */
+  handleAnimationState() {
+    if (isPaused) return;
+    this.checkDeath();
+    this.checkAlert();
+    this.playCurrentStateAnimation();
+  }
+
+  /**
+   * Plays the current state animation.
+   */
+  playCurrentStateAnimation() {
+    if (this.isDead && !this.hasPlayedDeathAnimation) {
+      this.playAnimation(this.IMAGES_DEATH);
+    } else if (!this.isDead) {
+      this.playAliveStateAnimation();
+    }
+  }
+
+  /**
+   * Plays the animation for alive state.
+   */
+  playAliveStateAnimation() {
+    if (this.isHurt() && !this.isWalking && !this.isAttacking) {
+      this.playAnimation(this.IMAGES_HURT);
+    } else if (this.isAttacking) {
+      this.playAnimation(this.IMAGES_ATTACK);
+    } else if (this.isWalking) {
+      this.playAnimation(this.IMAGES_WALKING);
+    } else {
+      this.playAnimation(this.IMAGES_ALERT);
+    }
+  }
+
+  /**
+   * Starts the counter attack after being hit.
+   * @param {Character} character - The player character
    */
   performCounterAttack(character) {
     if (isPaused || this.isWalking || this.isAttacking) return;
     this.lookAtCharacter(character);
-
     setTimeout(() => {
       if (isPaused) return;
       this.startWalkingPhase();
@@ -134,53 +160,58 @@ class Endboss extends MovableObject {
   }
 
   /**
-   * Starts the walking phase of the counter-attack.
-   * Boss walks for 25 frames before attacking.
+   * Starts the walking phase of the counter attack.
    */
   startWalkingPhase() {
     this.isWalking = true;
     let walkFrames = 0;
-    let targetWalkFrames = 25;
-    let walkSpeed = 100;
-
     this.walkInterval = this.setGameInterval(() => {
       if (isPaused) return;
-
-      if (this.otherDirection) {
-        this.moveRight();
-      } else {
-        this.moveLeft();
-      }
-
+      this.executeWalkStep();
       walkFrames++;
-
-      if (walkFrames >= targetWalkFrames) {
-        clearInterval(this.walkInterval);
-        this.walkInterval = null;
-        this.isWalking = false;
-        this.startAttackAnimation();
+      if (walkFrames >= 25) {
+        this.finishWalkingPhase();
       }
-    }, walkSpeed);
+    }, 100);
   }
 
   /**
-   * Plays the attack animation sequence.
+   * Executes a walk step.
+   */
+  executeWalkStep() {
+    if (this.otherDirection) {
+      this.moveRight();
+    } else {
+      this.moveLeft();
+    }
+  }
+
+  /**
+   * Finishes the walking phase and starts the attack.
+   */
+  finishWalkingPhase() {
+    clearInterval(this.walkInterval);
+    this.walkInterval = null;
+    this.isWalking = false;
+    this.startAttackAnimation();
+  }
+
+  /**
+   * Plays the attack animation.
    */
   startAttackAnimation() {
     if (isPaused) return;
-
     this.isAttacking = true;
     this.speed = 0;
-    let animationSpeed = 250;
-
+    let animationDuration = this.IMAGES_ATTACK.length * 250;
     setTimeout(() => {
       this.isAttacking = false;
       this.speed = 25;
-    }, this.IMAGES_ATTACK.length * animationSpeed);
+    }, animationDuration);
   }
 
   /**
-   * Plays the hurt sound effect with error handling.
+   * Plays the hurt sound.
    */
   playHurtSound() {
     if (this.hurtSound) {
@@ -192,7 +223,7 @@ class Endboss extends MovableObject {
   }
 
   /**
-   * Handles the boss being hit. Calls parent hit() and plays sound.
+   * Handles hits on the endboss.
    */
   hit() {
     super.hit();
@@ -200,7 +231,7 @@ class Endboss extends MovableObject {
   }
 
   /**
-   * Checks if boss should enter alert state (below 60% health).
+   * Checks if the alert state should be activated.
    */
   checkAlert() {
     if (this.energy <= 60 && !this.hasPlayedAlert) {
@@ -210,13 +241,12 @@ class Endboss extends MovableObject {
   }
 
   /**
-   * Plays a special alert animation sequence.
+   * Plays a special alert animation.
    */
   playAlertAnimation() {
     let imageIndex = 0;
     let interval = setInterval(() => {
       if (isPaused) return;
-
       this.loadImage(this.IMAGES_ALERT[imageIndex]);
       imageIndex++;
       if (imageIndex >= this.IMAGES_ALERT.length) {
@@ -226,36 +256,33 @@ class Endboss extends MovableObject {
   }
 
   /**
-   * Checks if boss should die and triggers end game.
+   * Checks if the endboss dies.
    */
   checkDeath() {
     if (this.energy <= 0 && !this.hasPlayedDeathAnimation) {
       this.isDead = true;
+      let deathAnimationDuration = this.IMAGES_DEATH.length * 220;
       setTimeout(() => {
         if (!isPaused) {
           this.hasPlayedDeathAnimation = true;
           this.endGame = true;
         }
-      }, this.IMAGES_DEATH.length * 220);
+      }, deathAnimationDuration);
     }
   }
 
   /**
-   * Moves the boss downward (used when dead to fall off screen).
+   * Moves the endboss downward (after death).
    */
   moveDown() {
     this.y += 2;
   }
 
   /**
-   * Makes the boss face towards the character.
+   * Makes the endboss look at the character.
    * @param {Character} character - The player character
    */
   lookAtCharacter(character) {
-    if (character.x < this.x) {
-      this.otherDirection = false;
-    } else {
-      this.otherDirection = true;
-    }
+    this.otherDirection = character.x >= this.x;
   }
 }

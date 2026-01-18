@@ -1,6 +1,6 @@
 /**
  * Base class for all visible game objects.
- * Handles image loading, caching, drawing to canvas, and interval management.
+ * Handles image loading, caching, canvas drawing, and interval management.
  */
 class DrawableObject {
   x = 120;
@@ -11,11 +11,11 @@ class DrawableObject {
   imageCache = {};
   currentImage = 0;
   img;
-  // Track intervals created by this object for proper cleanup
+  // Tracks created intervals for cleanup
   _intervals = [];
 
   /**
-   * Loads a single image from the given path.
+   * Loads a single image from the specified path.
    * @param {string} path - Path to the image file
    */
   loadImage(path) {
@@ -24,37 +24,24 @@ class DrawableObject {
   }
 
   /**
-   * Draws the object's current image on the canvas.
-   * @param {CanvasRenderingContext2D} ctx - The canvas rendering context
+   * Draws the current image onto the canvas.
+   * @param {CanvasRenderingContext2D} ctx - The canvas context
    */
   draw(ctx) {
     ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
   }
 
   /**
-   * Draws a debug frame around the object (currently disabled).
-   * @param {CanvasRenderingContext2D} ctx - The canvas rendering context
+   * Draws a debug frame around the object (disabled).
+   * @param {CanvasRenderingContext2D} ctx - The canvas context
    */
   drawFrame(ctx) {
     // Debug hitbox visualization (disabled in production)
-    // if (
-    //   this instanceof Character ||
-    //   this instanceof Chicken ||
-    //   this instanceof Bottle ||
-    //   this instanceof Coin ||
-    //   this instanceof Endboss
-    // ) {
-    //   ctx.beginPath();
-    //   ctx.lineWidth = "1";
-    //   ctx.strokeStyle = "blue";
-    //   ctx.rect(this.x, this.y, this.width, this.height);
-    //   ctx.stroke();
-    // }
   }
 
   /**
-   * Loads multiple images and caches them for animation use.
-   * @param {string[]} arr - Array of image paths to load
+   * Loads multiple images and stores them in the cache.
+   * @param {string[]} arr - Array of image paths
    */
   loadImages(arr) {
     arr.forEach((path) => {
@@ -67,8 +54,8 @@ class DrawableObject {
 
   /**
    * Creates an interval and tracks it for later cleanup.
-   * @param {Function} callback - Function to execute at each interval
-   * @param {number} ms - Interval duration in milliseconds
+   * @param {Function} callback - Function to execute
+   * @param {number} ms - Interval in milliseconds
    * @returns {number} The interval ID
    */
   setGameInterval(callback, ms) {
@@ -79,7 +66,6 @@ class DrawableObject {
 
   /**
    * Clears all intervals created by this object.
-   * Should be called when object is destroyed or game ends.
    */
   clearAllIntervals() {
     this._intervals.forEach((id) => clearInterval(id));
