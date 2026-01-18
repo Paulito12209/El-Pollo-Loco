@@ -444,38 +444,38 @@ function initMobileControls() {
   btnLeft.addEventListener("touchstart", (e) => {
     e.preventDefault();
     keyboard.LEFT = true;
-  });
+  }, { passive: false });
   btnLeft.addEventListener("touchend", (e) => {
     e.preventDefault();
     keyboard.LEFT = false;
-  });
+  }, { passive: false });
 
   btnRight.addEventListener("touchstart", (e) => {
     e.preventDefault();
     keyboard.RIGHT = true;
-  });
+  }, { passive: false });
   btnRight.addEventListener("touchend", (e) => {
     e.preventDefault();
     keyboard.RIGHT = false;
-  });
+  }, { passive: false });
 
   btnJump.addEventListener("touchstart", (e) => {
     e.preventDefault();
     keyboard.UP = true;
-  });
+  }, { passive: false });
   btnJump.addEventListener("touchend", (e) => {
     e.preventDefault();
     keyboard.UP = false;
-  });
+  }, { passive: false });
 
   btnThrow.addEventListener("touchstart", (e) => {
     e.preventDefault();
     keyboard.D = true;
-  });
+  }, { passive: false });
   btnThrow.addEventListener("touchend", (e) => {
     e.preventDefault();
     keyboard.D = false;
-  });
+  }, { passive: false });
 
   [btnLeft, btnRight, btnJump, btnThrow].forEach((btn) => {
     btn.addEventListener("touchcancel", (e) => {
@@ -484,6 +484,6 @@ function initMobileControls() {
       keyboard.RIGHT = false;
       keyboard.UP = false;
       keyboard.D = false;
-    });
+    }, { passive: false });
   });
 }
