@@ -5,45 +5,63 @@
 function createLevel1() {
   const level = new Level(
     [
-      // === ZONE 1: Introduction (500-1300) - Single chickens for warm-up ===
+      // === ZONE 1: Einführung (500-1300) - Einzelne Hühner zum Aufwärmen ===
       new Chicken(500),
+      new SmallChicken(750),
       new Chicken(900),
+      new SmallChicken(1100),
       new Chicken(1300),
 
-      // === ZONE 2: First challenge (1500-2300) - Groups of 2-3 ===
+      // === ZONE 2: Erste Herausforderung (1500-2300) - Gruppen aus 2-3 ===
       new Chicken(1500),
+      new SmallChicken(1600),
       new Chicken(1700),
+      new SmallChicken(1850),
       new Chicken(2000),
+      new SmallChicken(2100),
       new Chicken(2200),
       new Chicken(2300),
 
-      // === ZONE 3: Break (2700) - Scattered ===
+      // === ZONE 3: Pause (2500-2700) - Verteilt ===
+      new SmallChicken(2500),
       new Chicken(2700),
 
-      // === ZONE 4: Dense wave (3000-3800) - Many chickens! ===
+      // === ZONE 4: Dichte Welle (3000-3800) - Viele Hühner! ===
       new Chicken(3000),
+      new SmallChicken(3100),
       new Chicken(3200),
+      new SmallChicken(3250),
       new Chicken(3300),
+      new SmallChicken(3400),
       new Chicken(3500),
       new Chicken(3600),
+      new SmallChicken(3700),
       new Chicken(3800),
 
-      // === ZONE 5: Before the endboss (4000-4300) - Final enemies ===
+      // === ZONE 5: Vor dem Endboss (4000-4300) - Letzte Gegner ===
       new Chicken(4000),
+      new SmallChicken(4150),
       new Chicken(4300),
 
-      // === ZONE 6: After endboss (4700-7700) - Optional additional enemies ===
+      // === ZONE 6: Nach dem Endboss (4700-7700) - Zusätzliche Gegner ===
       new Chicken(4700),
+      new SmallChicken(4850),
       new Chicken(5000),
+      new SmallChicken(5150),
       new Chicken(5300),
       new Chicken(5500),
+      new SmallChicken(5600),
       new Chicken(5700),
+      new SmallChicken(6000),
       new Chicken(6200),
+      new SmallChicken(6500),
       new Chicken(6800),
+      new SmallChicken(7200),
       new Chicken(7500),
+      new SmallChicken(7600),
       new Chicken(7700),
 
-      // === ENDBOSS at x=4500 ===
+      // === ENDBOSS bei x=4500 ===
       new Endboss(4500)
     ],
     [
