@@ -20,7 +20,6 @@ let openedFromMenu = false;
  */
 function init() {
   canvas = document.getElementById("canvas");
-  loadMuteStatus();
 
   const dialog = document.getElementById("gameplayInfoDialog");
   if (dialog) {

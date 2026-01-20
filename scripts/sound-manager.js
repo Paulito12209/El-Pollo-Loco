@@ -1,6 +1,7 @@
 /**
  * Sound Manager für El Pollo Loco
  * Verwaltet alle Sound-bezogenen Funktionen des Spiels.
+ * Sound ist standardmäßig AN beim Laden. 
  */
 
 /**
@@ -90,9 +91,7 @@ function pauseAllSounds() {
  * Setzt Sounds nach Pause fort (wenn nicht gemutet).
  */
 function resumeAllSounds() {
-    if (world && !isMuted) {
-        // Sounds werden automatisch fortgesetzt wenn die Game-Loop weiterläuft
-    }
+    // Sounds werden automatisch fortgesetzt wenn die Game-Loop weiterläuft
 }
 
 /**
@@ -106,7 +105,6 @@ function toggleMute() {
         sound.muted = isMuted;
     });
 
-    saveMuteStatus();
     updateMuteButtons();
 }
 
@@ -120,7 +118,6 @@ function updateMuteButtons() {
         startBtn.textContent = isMuted ? "🔇" : "🔊";
     }
 
-    // Unterstützt beide möglichen ID-Sets im Burger-Menü
     const burgerIcon =
         document.getElementById("muteIconBurger") ||
         document.getElementById("muteIconBurgerCard");
@@ -137,25 +134,6 @@ function updateMuteButtons() {
 }
 
 /**
- * Speichert den Mute-Status in localStorage.
- */
-function saveMuteStatus() {
-    localStorage.setItem("elPolloLoco_isMuted", isMuted.toString());
-}
-
-/**
- * Lädt den Mute-Status aus localStorage.
- */
-function loadMuteStatus() {
-    const saved = localStorage.getItem("elPolloLoco_isMuted");
-
-    if (saved !== null) {
-        isMuted = saved === "true";
-    }
-    updateMuteButtons();
-}
-
-/**
  * Wendet die Mute-Einstellung auf alle Sounds nach Spielstart an.
  */
 function applyMuteToAllSounds() {
@@ -166,6 +144,3 @@ function applyMuteToAllSounds() {
         });
     }
 }
-
-// Beim Laden der Seite den Mute-Status sofort synchronisieren.
-document.addEventListener("DOMContentLoaded", loadMuteStatus);
