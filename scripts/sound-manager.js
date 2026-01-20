@@ -151,8 +151,8 @@ function loadMuteStatus() {
 
     if (saved !== null) {
         isMuted = saved === "true";
-        updateMuteButtons();
     }
+    updateMuteButtons();
 }
 
 /**
@@ -166,3 +166,6 @@ function applyMuteToAllSounds() {
         });
     }
 }
+
+// Beim Laden der Seite den Mute-Status sofort synchronisieren.
+document.addEventListener("DOMContentLoaded", loadMuteStatus);
